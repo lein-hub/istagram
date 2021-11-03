@@ -1,5 +1,18 @@
 const mix = require('laravel-mix');
 
+mix.options({
+    hmrOptions: {
+        host: 'localhost',
+        port: '8096'
+    },
+});
+
+mix.webpackConfig({
+    devServer: {
+        port: '8096'
+    },
+});
+
 /*
  |--------------------------------------------------------------------------
  | Mix Asset Management

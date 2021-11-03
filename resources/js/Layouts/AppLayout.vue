@@ -22,6 +22,9 @@
                                 <jet-nav-link :href="route('dashboard')" :active="route().current('dashboard')">
                                     Dashboard
                                 </jet-nav-link>
+                                <button @click="showForm" class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium leading-5 text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition">
+                                    New Post
+                                </button>
                             </div>
                         </div>
 
@@ -145,6 +148,9 @@
                         <jet-responsive-nav-link :href="route('dashboard')" :active="route().current('dashboard')">
                             Dashboard
                         </jet-responsive-nav-link>
+                        <jet-nav-link :href="route('post.form')" :active="route().current('post.form')">
+                            New Post
+                        </jet-nav-link>
                     </div>
 
                     <!-- Responsive Settings Options -->
@@ -245,6 +251,7 @@
         props: {
             title: String,
         },
+        emits: ['formShow'],
 
         components: {
             Head,
@@ -275,6 +282,10 @@
             logout() {
                 this.$inertia.post(route('logout'));
             },
+
+            showForm() {
+                this.$emit('formShow');
+            }
         }
     })
 </script>
