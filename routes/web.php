@@ -3,6 +3,7 @@
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\UserController;
 use App\Models\Post;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -46,4 +47,9 @@ Route::group(['prefix' => 'comment', 'middleware' => ['auth:sanctum', 'verified'
     Route::post('/', [CommentController::class, 'store'])->name('comment.store');
     Route::delete('/', [CommentController::class, 'destroy'])->name('comment.destroy');
     Route::patch('/', [CommentController::class, 'update'])->name('comment.update');
+});
+
+Route::group(['prefix' => 'user', 'middleware' => ['auth:sanctum', 'verified']], function () {
+    Route::post('/requestFollow', [UserController::class, 'requestFollow'])->name('user.reqFollow');
+    Route::post('/requestUnfollow', [UserController::class, 'requestUnfollow'])->name('user.reqUnfollow');
 });

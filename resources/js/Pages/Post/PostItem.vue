@@ -2,10 +2,10 @@
   <div class="rounded overflow-hidden border w-full bg-white mt-5 md:mx-0 lg:mx-0">
     <div class="w-full flex justify-between p-3">
       <div class="flex">
-        <div class="rounded-full h-8 w-8 bg-gray-500 flex items-center justify-center overflow-hidden">
+        <div @click="showUserPage(post.user.id)" class="cursor-pointer rounded-full h-8 w-8 bg-gray-500 flex items-center justify-center overflow-hidden">
           <img :src="post.user.profile_photo_url" alt="profilepic">
         </div>
-        <span class="pt-1 ml-2 font-bold text-sm">{{post.user.name}}</span>
+        <span @click="showUserPage(post.user.id)" class="cursor-pointer pt-1 ml-2 font-bold text-sm">{{post.user.name}}</span>
       </div>
       <span class="px-2 hover:bg-gray-300 cursor-pointer rounded"><i class="fas fa-ellipsis-h pt-2 text-lg"></i></span>
     </div>
@@ -17,7 +17,7 @@
       </div>
       <div class="pt-1">
         <div class="mb-2 text-sm">
-          <span class="font-medium mr-2">{{post.user.name}}</span> {{ post.content }}
+          <span @click="showUserPage(post.user.id)" class="font-medium mr-2 font-bold cursor-pointer">{{post.user.name}}</span> {{ post.content }}
         </div>
       </div>
       <div v-if="post.comments.length > 2" class="text-sm mb-2 text-gray-400 cursor-pointer font-medium">View all {{ post.comments.length }} comments</div>
@@ -26,7 +26,7 @@
           <span class="font-medium mr-2">razzle_dazzle</span> Dude! How cool! I went to New Zealand last summer and had a blast taking the tour! So much to see! Make sure you bring a good camera when you go!
         </div> -->
         <div class="mb-2 text-sm" v-for="comment in post.comments.slice(0,2)" :key="comment.id">
-          <span class="font-medium mr-2">{{ comment.user.name }}</span> {{ comment.content }}
+          <span @click="showUserPage(comment.user.id)" class="font-medium mr-2 font-bold cursor-pointer">{{ comment.user.name }}</span> {{ comment.content }}
         </div>
       </div>
     </div>
@@ -66,6 +66,9 @@ export default {
         submit() {
             this.form.post('/comment/');
             this.form.reset();
+        },
+        showUserPage(userId) {
+            this.$inertia.get('/'+ userId);
         }
     },
 }

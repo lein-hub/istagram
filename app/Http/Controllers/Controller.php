@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Follow;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class Controller extends BaseController
@@ -16,7 +18,21 @@ class Controller extends BaseController
 
     public function index()
     {
-        $posts = Post::with(['user', 'comments.user'])->latest()->get();
+
+        $posts = Post::where(function ($query) {
+            // 우선 내가 팔로잉 중인 유저들의 id와 나의 id를 원소로 가진 배열을 생성하자
+            $followings = Follow::where('follower_id', Auth::user()->id)->get();
+            $followings_and_me = [];
+            array_push($followings_and_me, Auth::user()->id);
+            foreach ($followings as $item) {
+                array_push($followings_and_me, $item->following_id);
+            }
+
+            // 나와 내가 팔로잉 중인 사람들의 Post만 가져오는 쿼리 생성
+            for ($i = 0; $i < count($followings_and_me); $i++) {
+                $query->orWhere('user_id', $followings_and_me[$i]);
+            }
+        })->with(['user', 'comments.user'])->orderBy('id', 'desc')->get();
 
         return Inertia::render('Dashboard', [
             'posts' => $posts
@@ -25,11 +41,11 @@ class Controller extends BaseController
 
     public function userPage($userId)
     {
-        $user = User::find($userId);
+        $user = User::where('id', $userId)->with(['followers', 'followings'])->get()[0];
         $posts = Post::where('user_id', $userId)->with(['user', 'comments.user'])->latest()->get();
         return Inertia::render('UserPage', [
-            'user' => $user,
-            'posts' => $posts
+            'thisUser' => $user,
+            'posts' => $posts,
         ]);
     }
 }

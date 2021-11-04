@@ -51,6 +51,7 @@
             createPost() {
                 this.postForm.post('/post', {
                     forceFormData: true,
+                    onSuccess: this.closeModal(),
                 });
             },
             closeModal() {

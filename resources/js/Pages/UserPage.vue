@@ -3,18 +3,28 @@
         <div class="bg-gray-600 lg:w-9/12 lg:mx-auto mt-5 mx-3">
             <div class="grid grid-cols-3">
                 <div class="col-span-1">
-                    <img class="h-full rounded-full mx-auto" :src="user.profile_photo_url" alt="">
+                    <img class="h-full rounded-full mx-auto" :src="thisUser.profile_photo_url" alt="">
                 </div>
 
                 <section class="col-span-2 bg-blue-200 pl-5">
                     <div class="flex my-3">
                         <h2 class="mr-5 text-2xl">
-                            {{ user.name }}
+                            {{ thisUser.name }}
                         </h2>
-                        <div class="">
-                            <div class="">
+                        <div v-if="isMe">
+                            <div class="mr-5">
                                 <a class="border rounded mr-5 p-1 font-extrabold" href="/accounts/edit/" tabindex="0">
                                     프로필 편집
+                                </a>
+                            </div>
+                        </div>
+                        <div v-else>
+                            <div class="mr-5">
+                                <a v-if="!isFollowed" class="rounded mr-5 p-1 font-extrabold bg-blue-500 cursor-pointer" @click="clickFollow" tabindex="0">
+                                    팔로우 하기
+                                </a>
+                                <a v-else class="rounded mr-5 p-1 font-extrabold bg-red-500 cursor-pointer" @click="clickUnfollow" tabindex="0">
+                                    언팔로우 하기
                                 </a>
                             </div>
                         </div>
@@ -42,7 +52,7 @@
                             <a class="" href="/cudust_v/followers/" tabindex="0">
                                 팔로워
                                 <span class="font-extrabold" title="92">
-                                    92
+                                    {{ thisUser.followers.length }}
                                 </span>
                             </a>
                         </li>
@@ -50,7 +60,7 @@
                             <a class="" href="/cudust_v/following/" tabindex="0">
                                 팔로우
                                 <span class="font-extrabold">
-                                    134
+                                    {{ thisUser.followings.length }}
                                 </span>
                             </a>
                         </li>
@@ -69,6 +79,19 @@
                     <button>3</button>
                 </div>
             </div>
+            <div class="grid grid-cols-3 gap-3">
+                <div class="bg-pink-200 cursor-pointer">
+                    <img class="object-cover overflow-hidden" src="https://3.bp.blogspot.com/-Chu20FDi9Ek/WoOD-ehQ29I/AAAAAAAAK7U/mc4CAiTYOY8VzOFzBKdR52aLRiyjqu0MwCLcBGAs/s1600/DSC04596%2B%25282%2529.JPG" alt="">
+                </div>
+                <div class="bg-pink-200">2</div>
+                <div class="bg-pink-200">3</div>
+                <div class="bg-pink-200">4</div>
+                <div class="bg-pink-200">5</div>
+                <div class="bg-pink-200">6</div>
+                <div class="bg-pink-200">7</div>
+                <div class="bg-pink-200">8</div>
+                <div class="bg-pink-200">9</div>
+            </div>
         </div>
     </app-layout>
 </template>
@@ -77,12 +100,45 @@ import AppLayout from '@/Layouts/AppLayout.vue'
 
 export default {
     props: [
-        'user',
-        'posts'
+        'thisUser',
+        'posts',
     ],
     components: {
         AppLayout
-    }
+    },
+    data() {
+        return {
+            isMe: false,
+            isFollowed: false,
+        }
+    },
+    methods: {
+        clickFollow() {
+            this.$inertia.form({
+                id: this.thisUser.id,
+            }).post('/user/requestFollow', {
+                onSuccess: () => this.isFollowed = true,
+            });
+        },
+        clickUnfollow() {
+            this.$inertia.form({
+                id: this.thisUser.id,
+            }).post('/user/requestUnfollow', {
+                onSuccess: () => this.isFollowed = false,
+            });
+        }
+    },
+    created() {
+        for (let key in this.thisUser.followers) {
+            if (this.thisUser.followers[key].id == this.$page.props.user.id) {
+                this.isFollowed = true;
+                break;
+            }
+        }
+        if (this.thisUser.id == this.$page.props.user.id) {
+            this.isMe = true;
+        }
+    },
 }
 </script>
 <style lang="">
