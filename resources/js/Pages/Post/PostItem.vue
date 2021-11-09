@@ -19,7 +19,8 @@
             <a href="#" class="block p-2 text-center text-gray-800 hover:bg-indigo-500 hover:text-white">포스트 보기</a>
         </div>
     </div>
-    <img class="w-full bg-cover" src="https://3.bp.blogspot.com/-Chu20FDi9Ek/WoOD-ehQ29I/AAAAAAAAK7U/mc4CAiTYOY8VzOFzBKdR52aLRiyjqu0MwCLcBGAs/s1600/DSC04596%2B%25282%2529.JPG">
+    <img v-if="post.images.length" class="w-full bg-cover" :src="post.images[0].image">
+    <img v-else class="w-full bg-cover" src="https://3.bp.blogspot.com/-Chu20FDi9Ek/WoOD-ehQ29I/AAAAAAAAK7U/mc4CAiTYOY8VzOFzBKdR52aLRiyjqu0MwCLcBGAs/s1600/DSC04596%2B%25282%2529.JPG">
     <div class="px-3 pb-2">
       <div class="pt-2">
         <i class="far fa-heart cursor-pointer"></i>
@@ -54,9 +55,9 @@
          </div>
       </div>
     </form>
+  <post-show :show="showPost" :post="post" :max-width="'full'" @closeModal="closeModal"></post-show>
   </div>
 
-  <post-show :show="showPost" :post="post" :max-width="'full'" @closeModal="closeModal"></post-show>
 </template>
 <script>
 import { defineComponent } from 'vue'

@@ -27,5 +27,7 @@
         "vue": "^3.0.5",
         "vue-loader": "^16.1.2"
     },
-    "dependencies": {}
+    "dependencies": {
+        "element-ui": "^2.15.6"
+    }
 }
