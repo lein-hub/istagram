@@ -81,7 +81,8 @@ class User extends Authenticatable
 
     public function votedPosts()
     {
-        return $this->belongsToMany(Post::class, 'post_user_vote', 'user_id', 'post_id', 'id', 'id', 'posts');
+        // return $this->belongsToMany(Post::class, 'post_user_vote', 'user_id', 'post_id', 'id', 'id', 'posts');
+        return $this->belongsToMany(Post::class, 'votes', 'user_id', 'post_id', 'id', 'id', 'posts');
     }
 
     public function followings()

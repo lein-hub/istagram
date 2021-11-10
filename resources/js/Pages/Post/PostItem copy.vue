@@ -21,38 +21,12 @@
             </div>
         </div>
     </div>
-    <img v-if="post.images.length < 1" class="w-full bg-cover" src="https://3.bp.blogspot.com/-Chu20FDi9Ek/WoOD-ehQ29I/AAAAAAAAK7U/mc4CAiTYOY8VzOFzBKdR52aLRiyjqu0MwCLcBGAs/s1600/DSC04596%2B%25282%2529.JPG">
-    <img v-else-if="post.images.length < 2" class="w-full bg-cover" :src="post.images[0].image">
-    <div v-else>
-        <carousel :items-to-show="1">
-            <slide v-for="img in post.images" :key="img.id">
-                <img class="h-full bg-cover" :src="img.image">
-            </slide>
-
-            <template #addons>
-                <navigation />
-                <pagination />
-            </template>
-        </carousel>
-    </div>
+    <img v-if="post.images.length" class="w-full bg-cover" :src="post.images[0].image">
+    <img v-else class="w-full bg-cover" src="https://3.bp.blogspot.com/-Chu20FDi9Ek/WoOD-ehQ29I/AAAAAAAAK7U/mc4CAiTYOY8VzOFzBKdR52aLRiyjqu0MwCLcBGAs/s1600/DSC04596%2B%25282%2529.JPG">
     <div class="px-3 pb-2">
-        <div class="flex my-auto">
-            <svg v-if="isLiked" @click="clickUnlike" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-1" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd" />
-            </svg>
-            <svg v-else @click="clickLike" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-            </svg>
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-            </svg>
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-            </svg>
-        </div>
       <div class="pt-2">
-        <!-- <i class="far fa-heart cursor-pointer"></i> -->
-        <span v-if="post.votes.length" class="text-sm text-gray-400 font-medium">{{ post.votes.length }} likes</span>
+        <i class="far fa-heart cursor-pointer"></i>
+        <span class="text-sm text-gray-400 font-medium">12 likes</span>
       </div>
       <div class="pt-1">
         <div class="mb-2 text-sm">
@@ -90,15 +64,9 @@
 <script>
 import { defineComponent } from 'vue'
 import PostShow from '@/Pages/Post/PostShow.vue'
-import 'vue3-carousel/dist/carousel.css';
-import { Carousel, Slide, Pagination, Navigation } from 'vue3-carousel';
 export default defineComponent({
     components: {
         PostShow,
-        Carousel,
-        Slide,
-        Pagination,
-        Navigation,
     },
     props: [
         'post'
@@ -110,8 +78,7 @@ export default defineComponent({
                 postId: this.post.id
             }),
             showPost: false,
-            isOpen: false,
-            isLiked: false,
+            isOpen: false
         }
     },
     methods: {
@@ -131,33 +98,6 @@ export default defineComponent({
         openEditForm() {
             this.$emit('openEdit', this.post)
         },
-        clickLike() {
-            this.$inertia.form({
-                postId: this.post.id
-            }).post('/vote');
-        },
-        clickUnlike() {
-            this.$inertia.form({
-                postId: this.post.id
-            }).delete('/vote');
-        }
-    },
-    created() {
-        // const currentUserId = this.$page.props.user.id;
-        // this.post.votes.forEach(function(e) {
-        //     if (e.pivot.user_id == currentUserId) {
-        //         console.log(this);
-        //         // console.log(this.post.id + 'is been liked');
-        //         this.isLiked = true;
-        //     }
-        // });
-
-        for (let key in this.post.votes) {
-            if (this.post.votes[key].pivot.user_id == this.$page.props.user.id) {
-                this.isLiked = true;
-                break;
-            }
-        }
     },
 })
 </script>

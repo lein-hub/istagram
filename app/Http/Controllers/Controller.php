@@ -32,7 +32,7 @@ class Controller extends BaseController
             for ($i = 0; $i < count($followings_and_me); $i++) {
                 $query->orWhere('user_id', $followings_and_me[$i]);
             }
-        })->with(['user', 'comments.user', 'images'])->orderBy('created_at', 'desc')->get();
+        })->with(['user', 'comments.user', 'images', 'votes'])->orderBy('created_at', 'desc')->get();
 
         return Inertia::render('Dashboard', [
             'posts' => $posts
