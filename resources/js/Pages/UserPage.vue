@@ -80,7 +80,7 @@
                 </div>
             </div>
             <div class="grid grid-cols-3 gap-3">
-                <div class="bg-pink-200 cursor-pointer">
+                <div v-for="post in posts" :key="post.id" class="bg-pink-200 cursor-pointer">
                     <img class="object-cover overflow-hidden" src="https://3.bp.blogspot.com/-Chu20FDi9Ek/WoOD-ehQ29I/AAAAAAAAK7U/mc4CAiTYOY8VzOFzBKdR52aLRiyjqu0MwCLcBGAs/s1600/DSC04596%2B%25282%2529.JPG" alt="">
                 </div>
                 <div class="bg-pink-200">2</div>

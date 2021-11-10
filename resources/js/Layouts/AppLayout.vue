@@ -113,6 +113,10 @@
                                             Profile
                                         </jet-dropdown-link>
 
+                                        <jet-dropdown-link :href="route('user.userPage', {'userId': $page.props.user.id})">
+                                            My Userpage
+                                        </jet-dropdown-link>
+
                                         <jet-dropdown-link :href="route('api-tokens.index')" v-if="$page.props.jetstream.hasApiFeatures">
                                             API Tokens
                                         </jet-dropdown-link>

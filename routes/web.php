@@ -31,7 +31,6 @@ Route::get('/', function () {
 });
 
 Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', [Controller::class, 'index'])->name('dashboard');
-Route::middleware(['auth:sanctum', 'verified'])->get('/{user_id}', [Controller::class, 'userPage'])->name('userPage');
 
 Route::group(['prefix' => 'post', 'middleware' => ['auth:sanctum', 'verified']], function () {
     Route::get('/', [PostController::class, 'form'])->name('post.form');
@@ -51,6 +50,7 @@ Route::group(['prefix' => 'comment', 'middleware' => ['auth:sanctum', 'verified'
 });
 
 Route::group(['prefix' => 'user', 'middleware' => ['auth:sanctum', 'verified']], function () {
+    Route::get('/{userId}', [UserController::class, 'userPage'])->name('user.userPage');
     Route::post('/requestFollow', [UserController::class, 'requestFollow'])->name('user.reqFollow');
     Route::post('/requestUnfollow', [UserController::class, 'requestUnfollow'])->name('user.reqUnfollow');
 });

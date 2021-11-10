@@ -3,12 +3,24 @@
 namespace App\Http\Controllers;
 
 use App\Models\Follow;
+use App\Models\Post;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class UserController extends Controller
 {
+    public function userPage($userId)
+    {
+        $user = User::where('id', $userId)->with(['followers', 'followings'])->get()[0];
+        $posts = Post::where('user_id', $userId)->with(['user', 'comments.user'])->latest()->get();
+        return Inertia::render('UserPage', [
+            'thisUser' => $user,
+            'posts' => $posts,
+        ]);
+    }
+
     public function requestFollow(Request $request)
     {
         $request->validate([

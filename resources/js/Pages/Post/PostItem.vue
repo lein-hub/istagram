@@ -24,20 +24,11 @@
     <img v-if="post.images.length < 1" class="w-full bg-cover" src="https://3.bp.blogspot.com/-Chu20FDi9Ek/WoOD-ehQ29I/AAAAAAAAK7U/mc4CAiTYOY8VzOFzBKdR52aLRiyjqu0MwCLcBGAs/s1600/DSC04596%2B%25282%2529.JPG">
     <img v-else-if="post.images.length < 2" class="w-full bg-cover" :src="post.images[0].image">
     <div v-else>
-        <carousel :items-to-show="1">
-            <slide v-for="img in post.images" :key="img.id">
-                <img class="h-full bg-cover" :src="img.image">
-            </slide>
-
-            <template #addons>
-                <navigation />
-                <pagination />
-            </template>
-        </carousel>
+        <image-carousel :images="post.images"></image-carousel>
     </div>
     <div class="px-3 pb-2">
         <div class="flex my-auto">
-            <svg v-if="isLiked" @click="clickUnlike" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-1" viewBox="0 0 20 20" fill="currentColor">
+            <svg v-if="isLiked()" @click="clickUnlike" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-1" viewBox="0 0 20 20" fill="currentColor">
                 <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd" />
             </svg>
             <svg v-else @click="clickLike" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -52,7 +43,7 @@
         </div>
       <div class="pt-2">
         <!-- <i class="far fa-heart cursor-pointer"></i> -->
-        <span v-if="post.votes.length" class="text-sm text-gray-400 font-medium">{{ post.votes.length }} likes</span>
+        <span v-if="post.votes.length" @click="showList = true" class="text-sm text-gray-400 font-medium">{{ post.votes.length }} likes</span>
       </div>
       <div class="pt-1">
         <div class="mb-2 text-sm">
@@ -84,21 +75,20 @@
       </div>
     </form>
   <post-show :show="showPost" :post="post" :max-width="'full'" @closeModal="closeModal"></post-show>
+  <user-list :show="showList" :votes="post.votes" @closeListModal="closeListModal" :max-width="'sm'"></user-list>
   </div>
 
 </template>
 <script>
 import { defineComponent } from 'vue'
 import PostShow from '@/Pages/Post/PostShow.vue'
-import 'vue3-carousel/dist/carousel.css';
-import { Carousel, Slide, Pagination, Navigation } from 'vue3-carousel';
+import UserList from '@/Pages/Post/UserList.vue'
+import ImageCarousel from '@/Pages/Post/ImageCarousel.vue'
 export default defineComponent({
     components: {
         PostShow,
-        Carousel,
-        Slide,
-        Pagination,
-        Navigation,
+        UserList,
+        ImageCarousel,
     },
     props: [
         'post'
@@ -110,8 +100,8 @@ export default defineComponent({
                 postId: this.post.id
             }),
             showPost: false,
+            showList: false,
             isOpen: false,
-            isLiked: false,
         }
     },
     methods: {
@@ -120,10 +110,13 @@ export default defineComponent({
             this.form.reset();
         },
         showUserPage(userId) {
-            this.$inertia.get('/'+ userId);
+            this.$inertia.get('/user/'+ userId);
         },
         closeModal() {
             this.showPost = false;
+        },
+        closeListModal() {
+            this.showList = false;
         },
         deletePost(postId) {
             this.form.delete('/post/' + postId);
@@ -140,23 +133,14 @@ export default defineComponent({
             this.$inertia.form({
                 postId: this.post.id
             }).delete('/vote');
-        }
-    },
-    created() {
-        // const currentUserId = this.$page.props.user.id;
-        // this.post.votes.forEach(function(e) {
-        //     if (e.pivot.user_id == currentUserId) {
-        //         console.log(this);
-        //         // console.log(this.post.id + 'is been liked');
-        //         this.isLiked = true;
-        //     }
-        // });
-
-        for (let key in this.post.votes) {
-            if (this.post.votes[key].pivot.user_id == this.$page.props.user.id) {
-                this.isLiked = true;
-                break;
+        },
+        isLiked() {
+            for (let key in this.post.votes) {
+                if (this.post.votes[key].user_id == this.$page.props.user.id) {
+                    return true;
+                }
             }
+            return false;
         }
     },
 })

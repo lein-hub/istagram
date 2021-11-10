@@ -32,20 +32,10 @@ class Controller extends BaseController
             for ($i = 0; $i < count($followings_and_me); $i++) {
                 $query->orWhere('user_id', $followings_and_me[$i]);
             }
-        })->with(['user', 'comments.user', 'images', 'votes'])->orderBy('created_at', 'desc')->get();
+        })->with(['user', 'comments.user', 'images', 'votes.user'])->orderBy('created_at', 'desc')->get();
 
         return Inertia::render('Dashboard', [
             'posts' => $posts
-        ]);
-    }
-
-    public function userPage($userId)
-    {
-        $user = User::where('id', $userId)->with(['followers', 'followings'])->get()[0];
-        $posts = Post::where('user_id', $userId)->with(['user', 'comments.user'])->latest()->get();
-        return Inertia::render('UserPage', [
-            'thisUser' => $user,
-            'posts' => $posts,
         ]);
     }
 }
