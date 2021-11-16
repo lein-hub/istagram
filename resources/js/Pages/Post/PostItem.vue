@@ -21,10 +21,10 @@
             </div>
         </div>
     </div>
-    <img v-if="post.images.length < 1" class="w-full bg-cover" src="https://3.bp.blogspot.com/-Chu20FDi9Ek/WoOD-ehQ29I/AAAAAAAAK7U/mc4CAiTYOY8VzOFzBKdR52aLRiyjqu0MwCLcBGAs/s1600/DSC04596%2B%25282%2529.JPG">
-    <img v-else-if="post.images.length < 2" class="w-full bg-cover" :src="post.images[0].image">
+    <!-- <img v-if="post.images.length < 1" class="w-full bg-cover" src="https://3.bp.blogspot.com/-Chu20FDi9Ek/WoOD-ehQ29I/AAAAAAAAK7U/mc4CAiTYOY8VzOFzBKdR52aLRiyjqu0MwCLcBGAs/s1600/DSC04596%2B%25282%2529.JPG"> -->
+    <img v-if="imageArray.length < 2" class="w-full bg-cover" :src="imageArray[0]">
     <div v-else>
-        <image-carousel :images="post.images"></image-carousel>
+        <image-carousel :images="imageArray"></image-carousel>
     </div>
     <div class="px-3 pb-2">
         <div class="flex my-auto">
@@ -102,6 +102,7 @@ export default defineComponent({
             showPost: false,
             showList: false,
             isOpen: false,
+            imageArray: [],
         }
     },
     methods: {
@@ -142,6 +143,10 @@ export default defineComponent({
             }
             return false;
         }
+    },
+    created() {
+        let images = JSON.parse(this.post.images[0].images);
+        this.imageArray = images;
     },
 })
 </script>

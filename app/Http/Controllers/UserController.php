@@ -14,7 +14,7 @@ class UserController extends Controller
     public function userPage($userId)
     {
         $user = User::where('id', $userId)->with(['followers', 'followings'])->get()[0];
-        $posts = Post::where('user_id', $userId)->with(['user', 'comments.user'])->latest()->get();
+        $posts = Post::where('user_id', $userId)->with(['user', 'comments.user', 'images'])->latest()->get();
         return Inertia::render('UserPage', [
             'thisUser' => $user,
             'posts' => $posts,

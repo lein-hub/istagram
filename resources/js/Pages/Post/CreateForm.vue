@@ -28,6 +28,11 @@
                   </p>
                 </div>
               </div>
+              <div class="mt-2" v-show="imagePreview">
+                <span class="block w-20 h-20 bg-center bg-no-repeat bg-cover rounded-full"
+                    :style="'background-image: url(\'' + imagePreview + '\');'">
+                </span>
+              </div>
             </div>
 
             <div>
@@ -70,6 +75,11 @@ export default defineComponent({
     emits: [
         'createPost', 'closeModal'
     ],
+    data() {
+        return {
+            imagePreview: null,
+        }
+    },
     methods: {
         createPost() {
             this.$emit('createPost')

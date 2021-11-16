@@ -40,10 +40,10 @@ class PostController extends Controller
 
     public function create(Request $request)
     {
+
         $request->validate([
             'content' => 'required',
         ]);
-
         $user = Auth::user();
 
         $post = new Post([
@@ -52,14 +52,16 @@ class PostController extends Controller
         ]);
         $post->save();
 
+        $images = array();
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $image) {
                 $imagePath = Storage::disk('uploads')->put($user->email . '/posts/' . $post->id, $image);
-                Image::create([
-                    'image' => '/uploads/' . $imagePath,
-                    'post_id' => $post->id,
-                ]);
+                array_push($images, '/uploads/' . $imagePath);
             }
+            Image::create([
+                'images' => json_encode($images),
+                'post_id' => $post->id,
+            ]);
 
             // foreach ($request->file('images') as $file) {
             //     $name = time() . '.' . $file->extension();

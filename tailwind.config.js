@@ -15,6 +15,10 @@ module.exports = {
             fontFamily: {
                 sans: ['Nunito', ...defaultTheme.fontFamily.sans],
             },
+            padding: {
+                '1/3': '33.33333%',
+                '2/3': '66.66667%',
+            }
         },
     },
 

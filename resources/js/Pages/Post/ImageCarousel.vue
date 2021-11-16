@@ -1,8 +1,8 @@
 <template lang="">
     <div>
         <carousel :items-to-show="1">
-            <slide v-for="img in images" :key="img.id">
-                <img class="h-full bg-cover" :src="img.image">
+            <slide v-for="(img, index) in images" :key="index">
+                <img class="h-full bg-cover" :src="img">
             </slide>
 
             <template #addons>

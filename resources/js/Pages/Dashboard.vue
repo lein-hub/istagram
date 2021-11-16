@@ -56,7 +56,6 @@
             },
             closeModal() {
                 this.createFormShow = false;
-                this.postForm.reset();
             },
             openEdit(post) {
                 console.log(post.id);

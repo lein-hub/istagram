@@ -80,8 +80,8 @@
                 </div>
             </div>
             <div class="grid grid-cols-3 gap-3">
-                <div v-for="post in posts" :key="post.id" class="bg-pink-200 cursor-pointer">
-                    <img class="object-cover overflow-hidden" src="https://3.bp.blogspot.com/-Chu20FDi9Ek/WoOD-ehQ29I/AAAAAAAAK7U/mc4CAiTYOY8VzOFzBKdR52aLRiyjqu0MwCLcBGAs/s1600/DSC04596%2B%25282%2529.JPG" alt="">
+                <div v-for="post in posts" :key="post.id" class="relative h-0 pb-2/3 pt-1/3 bg-pink-200 cursor-pointer">
+                    <img class="absolute inset-0 w-full h-full object-cover" :src="getImages(post.images[0].images)[0]" alt="">
                 </div>
                 <div class="bg-pink-200">2</div>
                 <div class="bg-pink-200">3</div>
@@ -126,6 +126,10 @@ export default {
             }).post('/user/requestUnfollow', {
                 onSuccess: () => this.isFollowed = false,
             });
+        },
+        getImages(data) {
+            let images = JSON.parse(data);
+            return images;
         }
     },
     created() {
