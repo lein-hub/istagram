@@ -7,6 +7,7 @@ use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
 
 class PostController extends Controller
@@ -40,10 +41,11 @@ class PostController extends Controller
 
     public function create(Request $request)
     {
-
         $request->validate([
             'content' => 'required',
+            'images.*' => 'required|mimes:png,jpg,jpeg|max:10240'
         ]);
+
         $user = Auth::user();
 
         $post = new Post([
@@ -93,10 +95,38 @@ class PostController extends Controller
 
     public function update(Request $request)
     {
+        $request->validate([
+            'content' => 'required',
+        ]);
+        if ($request->hasFile('images')) {
+            $request->validate([
+                'images.*' => 'required|mimes:png,jpg,jpeg|max:10240',
+            ]);
+        }
+
+        $user = Auth::user();
+
         $post = Post::where('id', $request->postId);
         $post->update([
             'content' => $request->content,
         ]);
+
+        if ($request->hasFile('images')) {
+            $images = array();
+
+            foreach ($request->file('images') as $image) {
+                $imagePath = Storage::disk('uploads')->put($user->email . '/posts/' . $request->postId, $image);
+                array_push($images, '/uploads/' . $imagePath);
+            }
+
+
+            $image = Image::where('post_id', $request->postId);
+
+            $image->update([
+                'images' => json_encode($images),
+            ]);
+        }
+
 
         return redirect()->route('dashboard');
     }

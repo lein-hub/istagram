@@ -6,7 +6,7 @@
             </h2>
         </template>
 
-        <post-list :posts="posts" @openEdit="openEdit"></post-list>
+        <post-list :posts="posts"></post-list>
 
         <!-- <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -57,9 +57,6 @@
             closeModal() {
                 this.createFormShow = false;
             },
-            openEdit(post) {
-                console.log(post.id);
-            }
         },
     })
 </script>

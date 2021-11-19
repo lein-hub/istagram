@@ -38,7 +38,7 @@ Route::group(['prefix' => 'post', 'middleware' => ['auth:sanctum', 'verified']],
     Route::get('/{postId}', [PostController::class, 'show'])->name('post.show');
     Route::post('/', [PostController::class, 'create'])->name('post.create');
     Route::delete('/{postId}', [PostController::class, 'destroy'])->name('post.destroy');
-    Route::patch('/{postId}', [PostController::class, 'update'])->name('post.update');
+    Route::patch('/', [PostController::class, 'update'])->name('post.update');
 });
 
 Route::group(['prefix' => 'comment', 'middleware' => ['auth:sanctum', 'verified']], function () {

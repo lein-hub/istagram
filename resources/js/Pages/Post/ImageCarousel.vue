@@ -2,7 +2,7 @@
     <div>
         <carousel :items-to-show="1">
             <slide v-for="(img, index) in images" :key="index">
-                <img class="h-full bg-cover" :src="img">
+                <img class="bg-cover" :src="img">
             </slide>
 
             <template #addons>

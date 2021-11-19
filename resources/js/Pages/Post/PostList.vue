@@ -1,7 +1,7 @@
 <template lang="">
     <div>
         <div v-for="post in posts" :key="post.id" class="w-full lg:w-8/12 md:w-8/12 mx-auto">
-            <post-item :post="post" @openEdit="openEdit"></post-item>
+            <post-item :post="post"></post-item>
         </div>
     </div>
 </template>
@@ -16,9 +16,6 @@ export default {
         'posts'
     ],
     methods: {
-        openEdit(post) {
-            this.$emit('openEdit', post);
-        }
     },
 }
 </script>
