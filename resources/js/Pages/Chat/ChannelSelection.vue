@@ -44,7 +44,6 @@ export default {
                 }
             }
             return name;
-            return 'temp'
         }
     },
     created() {

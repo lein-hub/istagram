@@ -43,6 +43,8 @@ class ChatController extends Controller
             }
         })->with('users')->orderBy('created_at', 'desc')->get();
 
+        // $channels = User::where('id', Auth::user()->id)->with('channels')->get()[0]->channels;
+
         return $channels;
     }
 
@@ -68,5 +70,50 @@ class ChatController extends Controller
 
     public function newChannel(Request $request)
     {
+        $channels = Channel::where(function ($query) {
+            // 우선 내가 팔로잉 중인 유저들의 id와 나의 id를 원소로 가진 배열을 생성하자
+            $ChannelUsers = ChannelUser::where('user_id', Auth::user()->id)->get();
+            // array_push($Channels_I_belonged, Auth::user()->id);
+            $Channels_I_belonged = [];
+
+            foreach ($ChannelUsers as $item) {
+                array_push($Channels_I_belonged, $item->channel_id);
+            }
+
+            if (count($Channels_I_belonged)) {
+                // 나와 내가 팔로잉 중인 사람들의 Post만 가져오는 쿼리 생성
+                for ($i = 0; $i < count($Channels_I_belonged); $i++) {
+                    $query->orWhere('id', $Channels_I_belonged[$i]);
+                }
+            } else {
+                $query->where('id', 'there is no channels you belonged');
+            }
+        })->with('users')->orderBy('created_at', 'desc')->get();
+
+        $thisUser = Auth::user();
+
+        if ($channels) {
+            for ($i = 0; $i < count($channels); $i++) {
+                $users_in = $channels[$i]->users;
+                for ($j = 0; $j < count($users_in); $j++) {
+                    if ($users_in[$j]->id == $thisUser->id) {
+                        return redirect()->route('chat');
+                    }
+                }
+            }
+        }
+
+        $newChannel = new Channel;
+        $newChannel->save();
+        ChannelUser::create([
+            'channel_id' => $newChannel->id,
+            'user_id' => $thisUser->id,
+        ]);
+        ChannelUser::create([
+            'channel_id' => $newChannel->id,
+            'user_id' => $request->userId,
+        ]);
+
+        return redirect()->route('chat');
     }
 }

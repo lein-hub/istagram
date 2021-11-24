@@ -15,12 +15,12 @@ class ChannelSeeder extends Seeder
      */
     public function run()
     {
-        // Channel::create([
-        //     'name' => '채널A'
-        // ]);
-        // Channel::create([
-        //     'name' => 'ANIMAX'
-        // ]);
+        Channel::create([
+            'name' => '채널A'
+        ]);
+        Channel::create([
+            'name' => 'ANIMAX'
+        ]);
         ChannelUser::create([
             'channel_id' => 1,
             'user_id' => 1,

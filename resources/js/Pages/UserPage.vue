@@ -1,12 +1,15 @@
 <template lang="">
     <app-layout>
         <div class="bg-gray-600 lg:w-9/12 lg:mx-auto mt-5 mx-3">
-            <div class="grid grid-cols-3">
-                <div class="col-span-1">
-                    <img class="h-full rounded-full mx-auto" :src="thisUser.profile_photo_url" alt="">
+            <div class="flex">
+                <div class="w-1/3">
+                    <div class="aspect-w-1 aspect-h-1 h-40 bg-pink-200 cursor-pointer">
+                        <img class="object-cover rounded-full" :src="thisUser.profile_photo_url" alt="">
+                    </div>
+                    <!-- <img class="rounded-full mx-auto" :src="thisUser.profile_photo_url" alt=""> -->
                 </div>
 
-                <section class="col-span-2 bg-blue-200 pl-5">
+                <section class="bg-blue-200 pl-5">
                     <div class="flex my-3">
                         <h2 class="mr-5 text-2xl">
                             {{ thisUser.name }}
