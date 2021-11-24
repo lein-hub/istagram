@@ -8,15 +8,15 @@ use Illuminate\Database\Eloquent\Model;
 class Chat extends Model
 {
     use HasFactory;
-    protected $fillable = ['content', 'user_id', 'channel_id'];
+    protected $fillable = ['content', 'user_id', 'channel_id', 'photo'];
 
     public function channel()
     {
-        $this->belongsTo(Channel::class);
+        return $this->belongsTo(Channel::class);
     }
 
     public function user()
     {
-        $this->belongsTo(User::class);
+        return $this->belongsTo(User::class);
     }
 }

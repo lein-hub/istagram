@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ChatController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\PostController;
@@ -57,3 +58,11 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth:sanctum', 'verified']],
 
 Route::middleware(['auth:sanctum', 'verified'])->post('/vote', [VoteController::class, 'vote'])->name('vote');
 Route::middleware(['auth:sanctum', 'verified'])->delete('/vote', [VoteController::class, 'devote'])->name('devote');
+
+Route::group(['prefix' => 'dm', 'middleware' => ['auth:sanctum', 'verified']], function () {
+    Route::get('/', [ChatController::class, 'index'])->name('chat');
+    Route::get('/channels', [ChatController::class, 'channels']);
+    Route::post('/channel', [ChatController::class, 'newChannel']);
+    Route::get('/channel/{channelId}/chats', [ChatController::class, 'chats']);
+    Route::post('/channel/{channelId}/chat', [ChatController::class, 'newChat']);
+});

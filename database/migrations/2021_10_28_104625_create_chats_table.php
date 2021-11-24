@@ -16,8 +16,9 @@ class CreateChatsTable extends Migration
         Schema::create('chats', function (Blueprint $table) {
             $table->id();
             $table->mediumText('content');
-            $table->foreignId('channel_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
+            $table->string('photo')->nullable();
+            $table->integer('channel_id');
+            $table->integer('user_id');
             $table->index('channel_id');
             $table->timestamps();
         });

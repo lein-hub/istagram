@@ -3,9 +3,9 @@
         <template #content>
             <div class="flex">
                 <div class="bg-black w-full max-w-3xl	 flex flex-col">
-                    <img v-if="imageArray.length < 2" class="w-full my-auto bg-cover" :src="imageArray[0]">
+                    <img v-if="images.length < 2" class="w-full my-auto bg-cover" :src="imageArray[0]">
                     <div v-else>
-                        <image-carousel :images="imageArray"></image-carousel>
+                        <image-carousel :images="images"></image-carousel>
                     </div>
                 </div>
                 <div class="w-96 min-w-max">
@@ -70,7 +70,6 @@ export default defineComponent({
     props: [
         'show',
         'post',
-        'imageArray',
     ],
     emits: [
         'closeModal'
@@ -80,7 +79,8 @@ export default defineComponent({
             form: this.$inertia.form({
                 content: null,
                 postId: this.post.id
-            })
+            }),
+            images: this.$parent.imageArray,
         }
     },
     methods: {

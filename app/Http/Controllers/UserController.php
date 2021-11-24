@@ -34,7 +34,7 @@ class UserController extends Controller
 
         $follow->save();
 
-        return redirect()->route('userPage', ['user_id' => $request->id]);
+        return redirect()->route('user.userPage', ['userId' => $request->id]);
     }
 
     public function requestUnfollow(Request $request)
@@ -44,6 +44,6 @@ class UserController extends Controller
         ]);
 
         Follow::where('follower_id', Auth::user()->id)->where('following_id', $request->id)->delete();
-        return redirect()->route('userPage', ['user_id' => $request->id]);
+        return redirect()->route('user.userPage', ['userId' => $request->id]);
     }
 }

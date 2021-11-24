@@ -15,9 +15,9 @@
                 </svg>
             </button>
             <div v-if="isOpen" class="absolute right-0 w-32 bg-white rounded-lg py-2 shadow-xl z-20">
-                <a @click="deletePost(post.id)" class="block p-2 text-center text-gray-800 hover:bg-indigo-500 hover:text-white">삭제</a>
-                <a @click="showEdit = true" class="block p-2 text-center text-gray-800 hover:bg-indigo-500 hover:text-white">수정</a>
-                <a href="#" class="block p-2 text-center text-gray-800 hover:bg-indigo-500 hover:text-white">포스트 보기</a>
+                <a @click="deletePost(post.id)" class="block p-2 text-center text-gray-800 hover:bg-indigo-500 hover:text-white cursor-pointer">삭제</a>
+                <a @click="showEdit = true" class="block p-2 text-center text-gray-800 hover:bg-indigo-500 hover:text-white cursor-pointer">수정</a>
+                <a @click="showPost=true" class="block p-2 text-center text-gray-800 hover:bg-indigo-500 hover:text-white cursor-pointer">포스트 보기</a>
             </div>
         </div>
     </div>
@@ -31,13 +31,13 @@
             <svg v-if="isLiked()" @click="clickUnlike" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-1" viewBox="0 0 20 20" fill="currentColor">
                 <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd" />
             </svg>
-            <svg v-else @click="clickLike" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg v-else @click="clickLike" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-1 cursor-pointer" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
             </svg>
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-1 cursor-pointer" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
             </svg>
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-1 cursor-pointer" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
             </svg>
         </div>
@@ -58,9 +58,9 @@
       </div>
     </div>
     <comment-input :postId="post.id"></comment-input>
-  <post-show :show="showPost" :post="post" :imageArray="imageArray" :max-width="'6xl'" @closeModal="closeModal"></post-show>
+  <post-show :show="showPost" :post="post" :max-width="'6xl'" @closeModal="closeModal"></post-show>
   <user-list :show="showList" :votes="post.votes" @closeListModal="closeListModal" :max-width="'sm'"></user-list>
-  <edit-form :show="showEdit" :post="post" :form="editForm" @closeEditModal="closeEditModal"></edit-form>
+  <edit-form :show="showEdit" :post="post" @closeEditModal="closeEditModal"></edit-form>
   </div>
 
 </template>
@@ -92,7 +92,15 @@ export default defineComponent({
             showList: false,
             showEdit: false,
             isOpen: false,
-            imageArray: [],
+        }
+    },
+    computed: {
+        imageArray() {
+            if (this.post.images.length) {
+                let images = JSON.parse(this.post.images[0].images);
+                return images;
+            }
+            return [];
         }
     },
     methods: {
@@ -135,12 +143,6 @@ export default defineComponent({
             }
             return false;
         },
-    },
-    created() {
-        if (this.post.images.length) {
-            let images = JSON.parse(this.post.images[0].images);
-            this.imageArray = images;
-        }
     },
 })
 </script>

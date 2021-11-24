@@ -1,6 +1,6 @@
 <template lang="">
     <div>
-        <div v-for="post in posts" :key="post.id" class="w-full lg:w-8/12 md:w-8/12 mx-auto">
+        <div v-for="post in posts" :key="post.id" class="w-full lg:w-1/2 md:w-8/12 mx-auto">
             <post-item :post="post"></post-item>
         </div>
     </div>

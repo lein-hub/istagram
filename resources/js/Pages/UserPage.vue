@@ -79,18 +79,10 @@
                     <button>3</button>
                 </div>
             </div>
-            <div class="grid grid-cols-3 gap-3">
+            <div class="grid grid-cols-3 lg:gap-7 gap-1">
                 <div v-for="post in posts" :key="post.id" class="relative h-0 pb-2/3 pt-1/3 bg-pink-200 cursor-pointer">
                     <img class="absolute inset-0 w-full h-full object-cover" :src="getImages(post.images[0].images)[0]" alt="">
                 </div>
-                <div class="bg-pink-200">2</div>
-                <div class="bg-pink-200">3</div>
-                <div class="bg-pink-200">4</div>
-                <div class="bg-pink-200">5</div>
-                <div class="bg-pink-200">6</div>
-                <div class="bg-pink-200">7</div>
-                <div class="bg-pink-200">8</div>
-                <div class="bg-pink-200">9</div>
             </div>
         </div>
     </app-layout>
