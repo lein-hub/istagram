@@ -86,6 +86,7 @@ export default defineComponent({
             console.log(this.form);
 
             this.form.post('/post', {
+                preserveScroll: true,
                 forceFormData: true,
                 onSuccess: this.close(),
             });

@@ -44,7 +44,8 @@ export default defineComponent ({
         UserList,
     },
     props: [
-        'followings'
+        'followings',
+        'goTo'
     ],
     data() {
         return {
@@ -75,7 +76,15 @@ export default defineComponent ({
             .then(response=>{
                 console.log(response.data);
                 this.channels = response.data;
-                this.setChannel(response.data[0]);
+                if (this.goTo) {
+                    this.channels.forEach(e=>{
+                        if (e.id == this.goTo) {
+                            this.setChannel(e);
+                        }
+                    })
+                } else {
+                    this.setChannel(response.data[0]);
+                }
             })
             .catch(error=>{
                 console.log(error);

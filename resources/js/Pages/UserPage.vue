@@ -3,9 +3,10 @@
         <div class="bg-gray-600 lg:w-9/12 lg:mx-auto mt-5 mx-3">
             <div class="flex">
                 <div class="w-1/3">
-                    <div class="aspect-w-1 aspect-h-1 h-40 bg-pink-200 cursor-pointer">
-                        <img class="object-cover rounded-full" :src="thisUser.profile_photo_url" alt="">
-                    </div>
+                    <button class="block h-40 w-40 rounded-full overflow-hidden m-auto focus:outline-none">
+                        <img class="object-cover h-full w-full" :src="thisUser.profile_photo_url" alt="">
+                    </button>
+
                     <!-- <img class="rounded-full mx-auto" :src="thisUser.profile_photo_url" alt=""> -->
                 </div>
 

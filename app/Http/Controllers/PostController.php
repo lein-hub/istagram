@@ -17,28 +17,6 @@ class PostController extends Controller
         return Inertia::render('Post/CreateForm');
     }
 
-    public function create2(Request $request)
-    {
-        $user = Auth::user();
-        $content = $request->content;
-        $images = $request->images;
-
-        $post = Post::create([
-            'content' => $content,
-            'user_id' => $user->id,
-        ]);
-
-        foreach ($images as $image) {
-            $imagePath = Storage::disk('uploads')->put($user->email . '/posts/' . $post->id, $image);
-            Image::create([
-                'image' => '/uploads/' . $imagePath,
-                'post_id' => $post->id
-            ]);
-        }
-
-        return response()->json(['error' => false, 'data' => $post]);
-    }
-
     public function create(Request $request)
     {
         $request->validate([

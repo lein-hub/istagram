@@ -20,7 +20,7 @@ class VoteController extends Controller
         ]);
 
         // return response()->json(['error' => false]);
-        // return redirect()->route('dashboard');
+        return redirect()->route('dashboard');
     }
 
     public function devote(Request $request)
@@ -33,6 +33,6 @@ class VoteController extends Controller
 
 
         // return response()->json(['error' => false]);
-        // return redirect()->route('dashboard');
+        return redirect()->route('dashboard');
     }
 }

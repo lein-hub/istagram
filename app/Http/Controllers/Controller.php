@@ -35,7 +35,7 @@ class Controller extends BaseController
         })->with(['user', 'comments.user', 'images', 'votes.user'])->orderBy('created_at', 'desc')->get();
 
         return Inertia::render('Dashboard', [
-            'posts' => $posts
+            'posts' => fn () => $posts
         ]);
     }
 }

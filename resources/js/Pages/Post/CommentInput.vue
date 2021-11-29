@@ -9,7 +9,7 @@
                     </svg>
                     </button>
                 </span>
-                <textarea v-model="this.form.content" aria-label="댓글 달기..." data-testid="post-comment-text-area" placeholder="댓글 달기..." rows="1" class="w-full resize-none border-l-0 border-r-0 border-b-0 border-t-gray-300 focus:outline-0 focus:placeholder-gray-400 text-gray-600 placeholder-gray-600 pl-12 pr-12 py-3"></textarea>
+                <textarea v-model="this.form.content" ref="textarea" aria-label="댓글 달기..." data-testid="post-comment-text-area" placeholder="댓글 달기..." rows="1" class="w-full resize-none border-l-0 border-r-0 border-b-0 border-t-gray-300 focus:outline-0 focus:placeholder-gray-400 text-gray-600 placeholder-gray-600 pl-12 pr-12 py-3"></textarea>
                 <div class="absolute right-0 items-center inset-y-0 hidden sm:flex">
                     <button type="submit" class="inline-flex items-center justify-center rounded-full font-bold	 h-12 w-12 transition duration-500 ease-in-out font-bold text-blue-200 hover:text-blue-500 bg-none focus:outline-none">
                     게시
@@ -36,6 +36,9 @@ export default {
         submit() {
             this.form.post('/comment/');
             this.form.reset();
+        },
+        focus() {
+            this.$refs.textarea.focus();
         }
     },
 }

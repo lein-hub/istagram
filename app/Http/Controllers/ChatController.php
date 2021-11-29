@@ -24,9 +24,8 @@ class ChatController extends Controller
     public function channels(Request $request)
     {
         $channels = Channel::where(function ($query) {
-            // 우선 내가 팔로잉 중인 유저들의 id와 나의 id를 원소로 가진 배열을 생성하자
+            // 내가 속한 채널들의 id 목록 생성
             $ChannelUsers = ChannelUser::where('user_id', Auth::user()->id)->get();
-            // array_push($Channels_I_belonged, Auth::user()->id);
             $Channels_I_belonged = [];
 
             foreach ($ChannelUsers as $item) {
@@ -34,16 +33,19 @@ class ChatController extends Controller
             }
 
             if (count($Channels_I_belonged)) {
-                // 나와 내가 팔로잉 중인 사람들의 Post만 가져오는 쿼리 생성
+                // 채널의 id가 내가 속한 채널들의 id와 일치하는가?
                 for ($i = 0; $i < count($Channels_I_belonged); $i++) {
                     $query->orWhere('id', $Channels_I_belonged[$i]);
                 }
             } else {
+                // 내가 속한 채널이 없을 경우 빈 모델 반환
                 $query->where('id', 'there is no channels you belonged');
             }
-        })->with('users')->orderBy('created_at', 'desc')->get();
-
-        // $channels = User::where('id', Auth::user()->id)->with('channels')->get()[0]->channels;
+            // 반환 된 channel 모델을 가장 마지막 chat이 생성된 날짜를 기준으로 정렬 (latest_message_on)
+        })->selectRaw("channels.*, (SELECT MAX(created_at) from chats WHERE chats.channel_id = channels.id) as latest_message_on")
+            ->with('users')
+            ->orderBy("latest_message_on", "DESC")
+            ->get();
 
         return $channels;
     }
@@ -71,9 +73,7 @@ class ChatController extends Controller
     public function newChannel(Request $request)
     {
         $channels = Channel::where(function ($query) {
-            // 우선 내가 팔로잉 중인 유저들의 id와 나의 id를 원소로 가진 배열을 생성하자
             $ChannelUsers = ChannelUser::where('user_id', Auth::user()->id)->get();
-            // array_push($Channels_I_belonged, Auth::user()->id);
             $Channels_I_belonged = [];
 
             foreach ($ChannelUsers as $item) {
@@ -81,7 +81,6 @@ class ChatController extends Controller
             }
 
             if (count($Channels_I_belonged)) {
-                // 나와 내가 팔로잉 중인 사람들의 Post만 가져오는 쿼리 생성
                 for ($i = 0; $i < count($Channels_I_belonged); $i++) {
                     $query->orWhere('id', $Channels_I_belonged[$i]);
                 }
@@ -96,8 +95,12 @@ class ChatController extends Controller
             for ($i = 0; $i < count($channels); $i++) {
                 $users_in = $channels[$i]->users;
                 for ($j = 0; $j < count($users_in); $j++) {
-                    if ($users_in[$j]->id == $thisUser->id) {
-                        return redirect()->route('chat');
+                    if ($users_in[$j]->id == $request->userId) {
+                        $followings = User::where('id', Auth::user()->id)->with('followings')->get()[0]->followings;
+                        return Inertia::render('Chat/Container', [
+                            'followings' => $followings,
+                            'goTo' => $channels[$i]->id,
+                        ]);
                     }
                 }
             }
