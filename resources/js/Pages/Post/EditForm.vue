@@ -12,7 +12,7 @@
                 Load photos
               </label>
               <div class="mt-1 flex justify-center border-2 border-gray-300 border-dashed rounded-md">
-                <image-input ref="images" :post='post'></image-input>
+                <image-input ref="images" :uploadedImages='images'></image-input>
               </div>
               <div class="mt-2" v-show="imagePreview">
                 <span class="block w-20 h-20 bg-center bg-no-repeat bg-cover rounded-full"
@@ -59,7 +59,7 @@ export default defineComponent({
         JetDialogModal,
         ImageInput,
     },
-    props: ['show', 'post'],
+    props: ['show', 'post', 'images'],
     emits: [
         'closeEditModal'
     ],
@@ -69,6 +69,7 @@ export default defineComponent({
             form: this.$inertia.form({
                 _method: 'PATCH',
                 images: null,
+                uploadedImages: null,
                 content: this.post.content,
                 postId: this.post.id,
             }),
@@ -77,10 +78,16 @@ export default defineComponent({
     methods: {
         updatePost() {
             if (this.$refs.images.files.length) {
+                let uploadedImages = new Array();
                 let images = new Array();
                 for (let i=0; i < this.$refs.images.files.length; i++) {
-                    images.push(this.$refs.images.files[i].file);
+                    if (this.$refs.images.files[i].file) {
+                        images.push(this.$refs.images.files[i].file);
+                    } else {
+                        uploadedImages.push(this.$refs.images.files[i].preview);
+                    }
                 }
+                this.form.uploadedImages = uploadedImages;
                 this.form.images = images;
             }
             console.log(this.form);

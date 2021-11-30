@@ -111,14 +111,21 @@ class PostController extends Controller
             'content' => $request->content,
         ]);
 
-        if ($request->hasFile('images')) {
+        if ($request->uploadedImages || $request->hasFile('images')) {
             $images = array();
 
-            foreach ($request->file('images') as $image) {
-                $imagePath = Storage::disk('uploads')->put($user->email . '/posts/' . $request->postId, $image);
-                array_push($images, '/uploads/' . $imagePath);
+            if ($request->uploadedImages) {
+                foreach ($request->uploadedImages as $image) {
+                    array_push($images, $image);
+                }
             }
 
+            if ($request->hasFile('images')) {
+                foreach ($request->file('images') as $image) {
+                    $imagePath = Storage::disk('uploads')->put($user->email . '/posts/' . $request->postId, $image);
+                    array_push($images, '/uploads/' . $imagePath);
+                }
+            }
 
             $image = Image::where('post_id', $request->postId);
 

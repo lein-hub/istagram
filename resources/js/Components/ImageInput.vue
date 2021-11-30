@@ -43,7 +43,7 @@
 <script>
 export default {
     props: [
-        'post'
+        'uploadedImages'
     ],
     data() {
         return {
@@ -118,7 +118,35 @@ export default {
         },
     },
     created() {
+        if (this.uploadedImages.length) {
 
+            // this.files = [...this.files, this.$refs.files.files];
+            //하나의 배열로 넣기
+            let num = -1;
+            for (let i = 0; i < this.uploadedImages.length; i++) {
+                this.files = [
+                    ...this.files,
+                    //이미지 업로드
+                    {
+                        //실제 파일
+                        file: '',
+                        //이미지 프리뷰
+                        preview: this.uploadedImages[i],
+                        //삭제및 관리를 위한 number
+                        number: i
+                    }
+                ];
+                num = i;
+                //이미지 업로드용 프리뷰
+                // this.filesPreview = [
+                //   ...this.filesPreview,
+                //   { file: URL.createObjectURL(this.$refs.files.files[i]), number: i }
+                // ];
+            }
+            this.uploadImageIndex = num + 1; //이미지 index의 마지막 값 + 1 저장
+            console.log(this.files);
+            // console.log(this.filesPreview);
+        }
     },
 }
 </script>
