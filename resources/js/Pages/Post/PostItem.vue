@@ -47,7 +47,7 @@
       </div>
       <div class="pt-1">
         <div class="mb-3 text-sm">
-          <span @click="showUserPage(post.user.id)" class="font-medium mr-2 font-bold cursor-pointer">{{post.user.name}}</span> {{ post.content }}
+          <span @click="showUserPage(post.user.id)" class="font-medium mr-2 font-bold cursor-pointer">{{post.user.name}}</span> <span v-html="hashtagToLink(post.content)"></span>
         </div>
       </div>
       <div v-if="post.comments.length > 2" @click="showPost=true" class="text-sm mb-2 text-gray-400 cursor-pointer font-medium">View all {{ post.comments.length }} comments</div>
@@ -153,6 +153,23 @@ export default defineComponent({
                 preserveScroll: true,
                 only: ['posts'],
             });
+        },
+        hashtagToLink(string) {
+            var content = string; // html 안에 'content'라는 아이디를 content 라는 변수로 정의한다.
+
+            var splitedArray = content.split(' '); // 공백을 기준으로 문자열을 자른다.
+            var linkedContent = '';
+            for(var word in splitedArray)
+            {
+            word = splitedArray[word];
+            if(word.indexOf('#') == 0) // # 문자를 찾는다.
+            {
+                word = word.replace(/#/g, "");
+                word = `<a href=/hashtag/${word}>#`+word+'</a>';
+            }
+            linkedContent += word+' ';
+            }
+            return linkedContent;
         },
     },
 })

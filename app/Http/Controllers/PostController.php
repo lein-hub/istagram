@@ -49,7 +49,7 @@ class PostController extends Controller
                 ]);
             }
             HashtagPost::create([
-                'hashtag_name' => $h,
+                'hashtag_id' => $hashtag->id,
                 'post_id' => $post->id
             ]);
         }

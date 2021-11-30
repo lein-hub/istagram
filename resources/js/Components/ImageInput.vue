@@ -118,7 +118,7 @@ export default {
         },
     },
     created() {
-        if (this.uploadedImages.length) {
+        if (this.uploadedImages) {
 
             // this.files = [...this.files, this.$refs.files.files];
             //하나의 배열로 넣기

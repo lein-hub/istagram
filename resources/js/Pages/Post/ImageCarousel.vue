@@ -31,12 +31,12 @@ export default {
   height: 100%;
 }
 
-.carousel >>> .carousel__viewport {
+/* .carousel >>> .carousel__viewport {
   object-fit: contain;
   height: 100%;
-}
+} */
 
-.carousel >>> .carousel__viewport >>> .carousel__track {
+/* .carousel >>> .carousel__viewport >>> .carousel__track {
   height: 100%;
-}
+} */
 </style>
