@@ -97,7 +97,7 @@ export default defineComponent({
             this.$emit('closeModal');
         },
         showUserPage(userId) {
-            this.$inertia.get('/'+ userId);
+            this.$inertia.get('/user/'+ userId);
         },
         newChatChannel(userId) {
             this.$inertia.form({

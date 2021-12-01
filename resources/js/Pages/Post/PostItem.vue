@@ -47,7 +47,11 @@
       </div>
       <div class="pt-1">
         <div class="mb-3 text-sm">
-          <span @click="showUserPage(post.user.id)" class="font-medium mr-2 font-bold cursor-pointer">{{post.user.name}}</span> <span v-html="hashtagToLink(post.content)"></span>
+          <span @click="showUserPage(post.user.id)" class="font-medium mr-2 font-bold cursor-pointer">{{post.user.name}}</span>
+              <span v-for="(item, index) in splitedContent" :key="index">
+                  <Link v-if="isHashtag(item)" :href="gethref(item)" class="text-blue-500 cursor-pointer">{{item + ' '}}</Link>
+                  <span v-else>{{item + ' '}}</span>
+              </span>
         </div>
       </div>
       <div v-if="post.comments.length > 2" @click="showPost=true" class="text-sm mb-2 text-gray-400 cursor-pointer font-medium">View all {{ post.comments.length }} comments</div>
@@ -72,6 +76,8 @@ import ImageCarousel from '@/Pages/Post/ImageCarousel.vue'
 import EditForm from '@/Pages/Post/EditForm.vue'
 import CommentInput from '@/Pages/Post/CommentInput.vue'
 import CommentItem from './CommentItem.vue'
+import { Link } from '@inertiajs/inertia-vue3'
+
 export default defineComponent({
     components: {
         PostShow,
@@ -80,6 +86,7 @@ export default defineComponent({
         EditForm,
         CommentInput,
         CommentItem,
+        Link,
     },
     props: [
         'post'
@@ -94,6 +101,7 @@ export default defineComponent({
             showList: false,
             showEdit: false,
             isOpen: false,
+
         }
     },
     computed: {
@@ -114,6 +122,23 @@ export default defineComponent({
         },
         isMine() {
             return this.post.user_id == this.$page.props.user.id;
+        },
+        splitedContent() {
+            var content = this.post.content; // html 안에 'content'라는 아이디를 content 라는 변수로 정의한다.
+
+            var splitedArray = content.split(' '); // 공백을 기준으로 문자열을 자른다.
+            // var linkedContent = '';
+            // for(var word in splitedArray)
+            // {
+            // word = splitedArray[word];
+            // if(word.indexOf('#') == 0) // # 문자를 찾는다.
+            // {
+            //     word = word.replace(/#/g, "");
+            //     word = `<a href="/hashtag/${word}" class="text-blue-500 cursor-pointer">#`+word+'</a>';
+            // }
+            // linkedContent += word+' ';
+            // }
+            return splitedArray;
         }
     },
     methods: {
@@ -165,12 +190,21 @@ export default defineComponent({
             if(word.indexOf('#') == 0) // # 문자를 찾는다.
             {
                 word = word.replace(/#/g, "");
-                word = `<a href=/hashtag/${word}>#`+word+'</a>';
+                word = `<Link href="/hashtag/${word}" class="text-blue-500 cursor-pointer">#`+word+'</Link>';
             }
             linkedContent += word+' ';
             }
             return linkedContent;
         },
+        isHashtag(string) {
+            if (string.indexOf('#') == 0) return true;
+            return false;
+        },
+        gethref(string) {
+
+            string = "/hashtag/" + string.replace(/#/g, "");
+            return string;
+        }
     },
 })
 </script>

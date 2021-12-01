@@ -27,8 +27,13 @@ class PostController extends Controller
     {
         $request->validate([
             'content' => 'required',
-            'images.*' => 'required|mimes:png,jpg,jpeg|max:10240'
         ]);
+        if ($request->hasFile('images')) {
+            $request->validate([
+                'images.*' => 'required|mimes:png,jpg,jpeg|max:10240',
+            ]);
+        }
+
 
         $user = Auth::user();
 

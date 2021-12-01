@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Follow;
+use App\Models\Hashtag;
+use App\Models\HashtagPost;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -35,6 +37,17 @@ class Controller extends BaseController
         })->with(['user', 'comments.user', 'images', 'votes.user'])->orderBy('created_at', 'desc')->get();
 
         return Inertia::render('Dashboard', [
+            'posts' => fn () => $posts
+        ]);
+    }
+
+
+
+    public function explore($hashtagName)
+    {
+        $posts = Hashtag::where('name', $hashtagName)->first()->posts()->with(['user', 'comments.user', 'images'])->orderBy('created_at', 'desc')->get();
+
+        return Inertia::render('Explore', [
             'posts' => fn () => $posts
         ]);
     }

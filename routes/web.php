@@ -31,11 +31,8 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/pusher', function () {
-    return Inertia::render('PusherIndex');
-});
-
 Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', [Controller::class, 'index'])->name('dashboard');
+Route::middleware(['auth:sanctum', 'verified'])->get('/hashtag/{hashtagName}', [Controller::class, 'explore'])->name('explore');
 
 Route::group(['prefix' => 'post', 'middleware' => ['auth:sanctum', 'verified']], function () {
     Route::get('/', [PostController::class, 'form'])->name('post.form');
