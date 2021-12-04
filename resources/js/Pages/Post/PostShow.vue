@@ -55,7 +55,7 @@
                                 <span v-if="post.votes.length" class="text-sm text-gray-400 font-medium">{{ post.votes.length }} likes</span>
                             </div>
                             <div>
-                                <comment-input :postId="post.id" ref="commentInput"></comment-input>
+                                <comment-input :postId="post.id" ref="commentInput" @getCurrentPost="getCurrentPost"></comment-input>
                             </div>
                         </div>
                     </div>
@@ -78,7 +78,7 @@ export default defineComponent({
     },
     props: [
         'show',
-        'post',
+        'propPost',
     ],
     emits: [
         'closeModal'
@@ -87,8 +87,9 @@ export default defineComponent({
         return {
             form: this.$inertia.form({
                 content: null,
-                postId: this.post.id
+                postId: this.propPost.id
             }),
+            post: this.propPost,
         }
     },
     computed: {
@@ -139,6 +140,9 @@ export default defineComponent({
                 only: ['posts'],
             });
         },
+        getCurrentPost(post) {
+            this.post = post;
+        }
     },
 });
 </script>

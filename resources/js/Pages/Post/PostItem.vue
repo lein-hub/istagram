@@ -57,12 +57,12 @@
       <div v-if="post.comments.length > 2" @click="showPost=true" class="text-sm mb-2 text-gray-400 cursor-pointer font-medium">View all {{ post.comments.length }} comments</div>
       <div class="mb-2">
         <div class="mb-2 text-sm" v-for="comment in post.comments.slice(0,2)" :key="comment.id">
-          <comment-item :comment="comment" @showUserPage="showUserPage" @getCurrentPosts="$emit('getCurrentPosts')"></comment-item>
+          <comment-item :comment="comment" @showUserPage="showUserPage" @getCurrentPost="getCurrentPost"></comment-item>
         </div>
       </div>
     </div>
-    <comment-input :postId="post.id" ref="commentInput"></comment-input>
-  <post-show :show="showPost" :post="post" :max-width="'6xl'" @closeModal="closeModal"></post-show>
+    <comment-input :postId="post.id" ref="commentInput" @getCurrentPost="getCurrentPost"></comment-input>
+  <post-show :show="showPost" :propPost="post" :max-width="'6xl'" @closeModal="closeModal"></post-show>
   <user-list :show="showList" :votes="post.votes" @closeListModal="closeListModal" :max-width="'sm'"></user-list>
   <edit-form :show="showEdit" :post="post" @closeEditModal="closeEditModal" :images="imageArray" @getPosts="getPosts"></edit-form>
   </div>
@@ -77,6 +77,7 @@ import EditForm from '@/Pages/Post/EditForm.vue'
 import CommentInput from '@/Pages/Post/CommentInput.vue'
 import CommentItem from './CommentItem.vue'
 import { Link } from '@inertiajs/inertia-vue3'
+import axios from 'axios'
 
 export default defineComponent({
     components: {
@@ -89,14 +90,15 @@ export default defineComponent({
         Link,
     },
     props: [
-        'post'
+        'propPost'
     ],
     data() {
         return {
             form: this.$inertia.form({
                 content: null,
-                postId: this.post.id
+                postId: this.propPost.id
             }),
+            post: this.propPost,
             showPost: false,
             showList: false,
             showEdit: false,
@@ -197,6 +199,10 @@ export default defineComponent({
         },
         getPosts() {
             this.$emit('getPosts');
+        },
+        getCurrentPost(post) {
+            console.log('getCurrentPost');
+            this.post = post;
         }
     },
 })

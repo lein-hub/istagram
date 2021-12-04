@@ -1,7 +1,7 @@
 <template lang="">
     <div id="postBox">
         <div v-for="post in posts.data" :key="post.id" class="w-full lg:w-1/2 md:w-8/12 mx-auto">
-            <post-item :post="post" @getPosts="$emit('getPosts')" @getCurrentPosts="$emit('getCurrentPosts')"></post-item>
+            <post-item :propPost="post" @getPosts="$emit('getPosts')" @getCurrentPosts="$emit('getCurrentPosts')"></post-item>
         </div>
     </div>
 </template>

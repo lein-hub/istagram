@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Comment;
+use App\Models\Post;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -29,7 +30,11 @@ class CommentController extends Controller
 
         $comment->save();
 
-        return redirect()->route('dashboard');
+        $post = Post::find($request->postId);
+        $post->load(['user', 'comments.user', 'images', 'votes.user']);
+
+        // return redirect()->route('dashboard');
+        return $post;
     }
 
     public function destroy(Request $request)

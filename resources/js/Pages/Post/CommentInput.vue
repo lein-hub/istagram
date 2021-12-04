@@ -26,20 +26,29 @@ export default {
     ],
     data() {
         return {
-            form: this.$inertia.form({
+            form: {
                 content: null,
                 postId: this.postId,
-            }),
+            },
         }
     },
     methods: {
         submit() {
-            this.form.post('/comment/', {
-                onSuccess: () => {
-                    this.$emit('getCurrentPosts');
-                }
-            });
-            this.form.reset();
+            // this.form.post('/comment/', {
+            //     onSuccess: () => {
+            //         this.$emit('getCurrentPosts');
+            //     }
+            // });
+            // this.form.reset();
+
+            axios.post('/comment/', this.form)
+            .then(response => {
+                this.$emit('getCurrentPost', response.data);
+                this.form.content = '';
+            })
+            .catch(error => {
+                console.log(error);
+            })
         },
         focus() {
             this.$refs.textarea.focus();
