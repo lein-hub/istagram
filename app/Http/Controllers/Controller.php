@@ -21,6 +21,15 @@ class Controller extends BaseController
     public function index()
     {
 
+        // $posts = $this->getPosts();
+
+
+
+        return Inertia::render('Dashboard');
+    }
+
+    public function getPosts()
+    {
         $posts = Post::where(function ($query) {
             // 우선 내가 팔로잉 중인 유저들의 id와 나의 id를 원소로 가진 배열을 생성하자
             $followings = Follow::where('follower_id', Auth::user()->id)->get();
@@ -34,21 +43,18 @@ class Controller extends BaseController
             for ($i = 0; $i < count($followings_and_me); $i++) {
                 $query->orWhere('user_id', $followings_and_me[$i]);
             }
-        })->with(['user', 'comments.user', 'images', 'votes.user'])->orderBy('created_at', 'desc')->get();
+        })->with(['user', 'comments.user', 'images', 'votes.user'])->orderBy('created_at', 'desc')->paginate(5);
 
-        return Inertia::render('Dashboard', [
-            'posts' => fn () => $posts
-        ]);
+        return $posts;
     }
-
-
 
     public function explore($hashtagName)
     {
         $posts = Hashtag::where('name', $hashtagName)->first()->posts()->with(['user', 'comments.user', 'images'])->orderBy('created_at', 'desc')->get();
 
         return Inertia::render('Explore', [
-            'posts' => fn () => $posts
+            'posts' => fn () => $posts,
+            'tagname' => fn () => $hashtagName,
         ]);
     }
 }

@@ -32,6 +32,7 @@ Route::get('/', function () {
 });
 
 Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', [Controller::class, 'index'])->name('dashboard');
+Route::middleware(['auth:sanctum', 'verified'])->get('/getPosts', [Controller::class, 'getPosts'])->name('getPosts');
 Route::middleware(['auth:sanctum', 'verified'])->get('/hashtag/{hashtagName}', [Controller::class, 'explore'])->name('explore');
 
 Route::group(['prefix' => 'post', 'middleware' => ['auth:sanctum', 'verified']], function () {
@@ -64,6 +65,6 @@ Route::group(['prefix' => 'dm', 'middleware' => ['auth:sanctum', 'verified']], f
     Route::get('/', [ChatController::class, 'index'])->name('chat');
     Route::get('/channels', [ChatController::class, 'channels']);
     Route::post('/channel', [ChatController::class, 'newChannel']);
-    Route::get('/channel/{channelId}/chats', [ChatController::class, 'chats']);
+    Route::get('/channel/{channelId}/chats', [ChatController::class, 'chats'])->name('chat.chats');
     Route::post('/channel/{channelId}/chat', [ChatController::class, 'newChat']);
 });

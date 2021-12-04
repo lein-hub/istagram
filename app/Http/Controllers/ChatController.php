@@ -53,7 +53,7 @@ class ChatController extends Controller
     public function chats(Request $request, $channelId)
     {
 
-        $chats = Chat::where('channel_id', $channelId)->with('user')->latest()->get();
+        $chats = Chat::where('channel_id', $channelId)->with('user')->latest()->paginate(10);
         return $chats;
     }
 

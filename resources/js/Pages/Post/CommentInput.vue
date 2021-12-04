@@ -34,7 +34,11 @@ export default {
     },
     methods: {
         submit() {
-            this.form.post('/comment/');
+            this.form.post('/comment/', {
+                onSuccess: () => {
+                    this.$emit('getCurrentPosts');
+                }
+            });
             this.form.reset();
         },
         focus() {

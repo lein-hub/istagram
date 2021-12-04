@@ -18,7 +18,7 @@
             <div class="py-12 w-full">
                 <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                     <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
-                        <chat-container :chats="chats"></chat-container>
+                        <chat-container :chats="chats" @getMoreChats="getMoreChats"></chat-container>
                         <input-chat :channel="currentChannel" @messageSent="getChats()"></input-chat>
                     </div>
                 </div>
@@ -102,6 +102,18 @@ export default defineComponent ({
                 console.log(error);
             })
         },
+        getMoreChats() {
+            if (this.chats.current_page == this.chats.last_page) {
+                return
+            }
+            axios.get(this.chats.next_page_url).then(response => {
+                // this.chats = response.data
+                // this.chats.data = [...this.chats.data, ...response.data.data];
+                this.chats = {...response.data, 'data': [...this.chats.data, ...response.data.data]};
+            }).catch(error => {
+                console.log(error);
+            });
+        },
         close() {
             this.listShow = false;
         }
@@ -116,7 +128,8 @@ export default defineComponent ({
     },
     created() {
         this.getChannels();
-    }
+    },
+
 })
 </script>
 <style lang="">

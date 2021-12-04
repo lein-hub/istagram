@@ -37,13 +37,13 @@
             <svg @click="$refs.commentInput.focus()" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-1 cursor-pointer" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
             </svg>
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-1 cursor-pointer" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg v-if="!isMine" @click="newChatChannel(post.user.id)" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-1 cursor-pointer" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
             </svg>
         </div>
       <div class="pt-2">
         <!-- <i class="far fa-heart cursor-pointer"></i> -->
-        <span v-if="post.votes.length" @click="showList = true" class="text-sm text-gray-400 font-medium">{{ post.votes.length }} likes</span>
+        <span v-if="post.votes.length" @click="showList = true" class="text-sm text-gray-400 font-medium cursor-pointer">{{ post.votes.length }} likes</span>
       </div>
       <div class="pt-1">
         <div class="mb-3 text-sm">
@@ -57,14 +57,14 @@
       <div v-if="post.comments.length > 2" @click="showPost=true" class="text-sm mb-2 text-gray-400 cursor-pointer font-medium">View all {{ post.comments.length }} comments</div>
       <div class="mb-2">
         <div class="mb-2 text-sm" v-for="comment in post.comments.slice(0,2)" :key="comment.id">
-          <comment-item :comment="comment" @showUserPage="showUserPage"></comment-item>
+          <comment-item :comment="comment" @showUserPage="showUserPage" @getCurrentPosts="$emit('getCurrentPosts')"></comment-item>
         </div>
       </div>
     </div>
     <comment-input :postId="post.id" ref="commentInput"></comment-input>
   <post-show :show="showPost" :post="post" :max-width="'6xl'" @closeModal="closeModal"></post-show>
   <user-list :show="showList" :votes="post.votes" @closeListModal="closeListModal" :max-width="'sm'"></user-list>
-  <edit-form :show="showEdit" :post="post" @closeEditModal="closeEditModal" :images="imageArray"></edit-form>
+  <edit-form :show="showEdit" :post="post" @closeEditModal="closeEditModal" :images="imageArray" @getPosts="getPosts"></edit-form>
   </div>
 
 </template>
@@ -161,7 +161,9 @@ export default defineComponent({
         deletePost(postId) {
             this.$inertia.form({
                 postId: this.post.id,
-            }).delete('/post/' + postId);
+            }).delete('/post/' + postId, {
+                onSuccess: this.$emit('getPosts'),
+            });
         },
         clickLike() {
             this.$inertia.form({
@@ -179,22 +181,10 @@ export default defineComponent({
                 only: ['posts'],
             });
         },
-        hashtagToLink(string) {
-            var content = string; // html 안에 'content'라는 아이디를 content 라는 변수로 정의한다.
-
-            var splitedArray = content.split(' '); // 공백을 기준으로 문자열을 자른다.
-            var linkedContent = '';
-            for(var word in splitedArray)
-            {
-            word = splitedArray[word];
-            if(word.indexOf('#') == 0) // # 문자를 찾는다.
-            {
-                word = word.replace(/#/g, "");
-                word = `<Link href="/hashtag/${word}" class="text-blue-500 cursor-pointer">#`+word+'</Link>';
-            }
-            linkedContent += word+' ';
-            }
-            return linkedContent;
+        newChatChannel(userId) {
+            this.$inertia.form({
+                userId: userId,
+            }).post('/dm/channel');
         },
         isHashtag(string) {
             if (string.indexOf('#') == 0) return true;
@@ -204,6 +194,9 @@ export default defineComponent({
 
             string = "/hashtag/" + string.replace(/#/g, "");
             return string;
+        },
+        getPosts() {
+            this.$emit('getPosts');
         }
     },
 })

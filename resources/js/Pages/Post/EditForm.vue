@@ -61,7 +61,8 @@ export default defineComponent({
     },
     props: ['show', 'post', 'images'],
     emits: [
-        'closeEditModal'
+        'closeEditModal',
+        'getPosts',
     ],
     data() {
         return {
@@ -95,7 +96,10 @@ export default defineComponent({
             this.form.post('/post', {
                 preserveScroll: true,
                 forceFormData: true,
-                onSuccess: this.close(),
+                onSuccess: () => {
+                    this.close();
+                    this.$emit('getPosts');
+                }
             });
         },
         close() {
