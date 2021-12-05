@@ -1,7 +1,7 @@
 <template lang="">
     <div>
         <img @click="showPost = true" class="absolute inset-0 w-full h-full object-cover" :src="getImages(post.images[0].images)[0]" alt="">
-        <post-show :show="showPost" :post="post" :max-width="'6xl'" @closeModal="showPost = false"></post-show>
+        <post-show :show="showPost" :propPost="post" :max-width="'6xl'" @closeModal="showPost = false"></post-show>
     </div>
 </template>
 <script>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Post;
 use App\Models\Vote;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -19,8 +20,10 @@ class VoteController extends Controller
             'post_id' => $request->postId,
         ]);
 
-        // return response()->json(['error' => false]);
-        return redirect()->route('dashboard');
+        $post = Post::find($request->postId);
+        $post->load(['user', 'comments.user', 'images', 'votes.user']);
+        // return redirect()->route('dashboard');
+        return $post;
     }
 
     public function devote(Request $request)
@@ -32,7 +35,9 @@ class VoteController extends Controller
         Vote::where('post_id', $request->postId)->where('user_id', Auth::user()->id)->delete();
 
 
-        // return response()->json(['error' => false]);
-        return redirect()->route('dashboard');
+        $post = Post::find($request->postId);
+        $post->load(['user', 'comments.user', 'images', 'votes.user']);
+        // return redirect()->route('dashboard');
+        return $post;
     }
 }

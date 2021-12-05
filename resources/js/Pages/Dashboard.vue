@@ -72,7 +72,7 @@
                 this.createFormShow = false;
             },
             getMorePosts() {
-                if (this.posts.current_page == this.posts.last_page) {
+                if (!this.posts.next_page_url) {
                     return
                 }
                 axios.get(this.posts.next_page_url, {}).then(response => {

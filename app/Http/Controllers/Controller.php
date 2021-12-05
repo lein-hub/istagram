@@ -10,6 +10,7 @@ use App\Models\User;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -56,5 +57,20 @@ class Controller extends BaseController
             'posts' => fn () => $posts,
             'tagname' => fn () => $hashtagName,
         ]);
+    }
+
+    public function autocomplete($hashtagName)
+    {
+        $data = Hashtag::select('name')->where('name', "LIKE", '%' . $hashtagName . '%')->get();
+
+        $hashtags = array();
+
+        foreach ($data as $d) {
+            array_push($hashtags, $d->name);
+        };
+
+
+        // return response()->json($data);
+        return $hashtags;
     }
 }

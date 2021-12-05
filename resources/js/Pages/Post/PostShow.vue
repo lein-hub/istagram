@@ -81,7 +81,7 @@ export default defineComponent({
         'propPost',
     ],
     emits: [
-        'closeModal'
+        'closeModal', 'getCurrentPost'
     ],
     data() {
         return {
@@ -125,23 +125,28 @@ export default defineComponent({
             }).post('/dm/channel');
         },
         clickLike() {
-            this.$inertia.form({
-                postId: this.post.id
-            }).post('/vote', {
-                preserveScroll: true,
-                only: ['posts'],
+            axios.post('/vote', {
+                postId: this.post.id,
+            }).then(response => {
+                this.post = response.data;
+                this.$emit('getCurrentPost', response.data);
+            }).catch(error => {
+                console.log(error);
             });
         },
         clickUnlike() {
-            this.$inertia.form({
-                postId: this.post.id
-            }).delete('/vote', {
-                preserveScroll: true,
-                only: ['posts'],
+            axios.put('/vote', {
+                postId: this.post.id,
+            }).then(response => {
+                this.post = response.data;
+                this.$emit('getCurrentPost', response.data);
+            }).catch(error => {
+                console.log(error);
             });
         },
         getCurrentPost(post) {
             this.post = post;
+            this.$emit('getCurrentPost');
         }
     },
 });

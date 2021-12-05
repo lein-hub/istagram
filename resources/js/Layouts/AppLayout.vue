@@ -30,8 +30,8 @@
                                 </button>
                                 <div class="pt-2 relative mx-auto text-gray-600">
                                     <form @submit.prevent="search">
-                                        <input v-model="keyword" class="border-2 border-gray-300 bg-white h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none"
-                                        type="search" name="search" placeholder="Search">
+                                        <input v-model="keyword" @focus="autocom = true" @blur="autocom = false" v-on:keyup="autocomplete" id="search" class="border-2 border-gray-300 bg-white h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none"
+                                        type="search" name="search" placeholder="Search" autocomplete="off">
                                         <button type="submit" class="absolute right-0 top-0 mt-5 mr-4">
                                             <svg class="text-gray-600 h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg"
                                                 xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px"
@@ -42,6 +42,9 @@
                                             </svg>
                                         </button>
                                     </form>
+                                    <div v-if="autocom" class="absolute right-0 w-64 bg-white py-2 rounded-lg shadow-xl z-20">
+                                        <a v-for="name in suggestions" @mousedown="$inertia.get('/hashtag/'+name)" :key="name" class="block p-2 text-gray-800 hover:bg-indigo-500 hover:text-white cursor-pointer">#{{name}}</a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -293,6 +296,9 @@
             return {
                 showingNavigationDropdown: false,
                 keyword: '',
+                suggestions: [],
+                autocom: false,
+                timer: null,
             }
         },
 
@@ -315,6 +321,36 @@
 
             search() {
                 this.$inertia.get(`/hashtag/${this.keyword}`);
+            },
+
+            autocomplete() {
+                if (this.timer) {
+                    clearTimeout(this.timer);
+                    this.timer = null;
+                }
+                this.timer = setTimeout(() => {
+                    if (this.keyword) {
+                        axios.get('/autocomplete/'+this.keyword)
+                        .then(response => {
+                            this.suggestions = response.data;
+                            console.log(this.suggestions);
+                        })
+                        .catch(error => {
+                            console.log(error);
+                        });
+                    } else {
+                        this.suggestions = [];
+                    }
+                }, 300);
+
+            },
+
+            onfocus() {
+                this.autocomplete();
+            },
+
+            outfocus() {
+                // this.suggestions = [];
             }
         }
     })

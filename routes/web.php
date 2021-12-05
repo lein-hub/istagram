@@ -34,6 +34,7 @@ Route::get('/', function () {
 Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', [Controller::class, 'index'])->name('dashboard');
 Route::middleware(['auth:sanctum', 'verified'])->get('/getPosts', [Controller::class, 'getPosts'])->name('getPosts');
 Route::middleware(['auth:sanctum', 'verified'])->get('/hashtag/{hashtagName}', [Controller::class, 'explore'])->name('explore');
+Route::middleware(['auth:sanctum', 'verified'])->get('/autocomplete/{hashtagName}', [Controller::class, 'autocomplete'])->name('autocomplete');
 
 Route::group(['prefix' => 'post', 'middleware' => ['auth:sanctum', 'verified']], function () {
     Route::get('/', [PostController::class, 'form'])->name('post.form');
@@ -59,7 +60,7 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth:sanctum', 'verified']],
 });
 
 Route::middleware(['auth:sanctum', 'verified'])->post('/vote', [VoteController::class, 'vote'])->name('vote');
-Route::middleware(['auth:sanctum', 'verified'])->delete('/vote', [VoteController::class, 'devote'])->name('devote');
+Route::middleware(['auth:sanctum', 'verified'])->put('/vote', [VoteController::class, 'devote'])->name('devote');
 
 Route::group(['prefix' => 'dm', 'middleware' => ['auth:sanctum', 'verified']], function () {
     Route::get('/', [ChatController::class, 'index'])->name('chat');

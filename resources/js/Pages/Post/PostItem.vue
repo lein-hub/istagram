@@ -62,7 +62,7 @@
       </div>
     </div>
     <comment-input :postId="post.id" ref="commentInput" @getCurrentPost="getCurrentPost"></comment-input>
-  <post-show :show="showPost" :propPost="post" :max-width="'6xl'" @closeModal="closeModal"></post-show>
+  <post-show :show="showPost" :propPost="post" :max-width="'6xl'" @closeModal="closeModal" @getCurrentPost="getCurrentPost"></post-show>
   <user-list :show="showList" :votes="post.votes" @closeListModal="closeListModal" :max-width="'sm'"></user-list>
   <edit-form :show="showEdit" :post="post" @closeEditModal="closeEditModal" :images="imageArray" @getPosts="getPosts"></edit-form>
   </div>
@@ -168,19 +168,21 @@ export default defineComponent({
             });
         },
         clickLike() {
-            this.$inertia.form({
-                postId: this.post.id
-            }).post('/vote', {
-                preserveScroll: true,
-                only: ['posts'],
+            axios.post('/vote', {
+                postId: this.post.id,
+            }).then(response => {
+                this.post = response.data;
+            }).catch(error => {
+                console.log(error);
             });
         },
         clickUnlike() {
-            this.$inertia.form({
-                postId: this.post.id
-            }).delete('/vote', {
-                preserveScroll: true,
-                only: ['posts'],
+            axios.put('/vote', {
+                postId: this.post.id,
+            }).then(response => {
+                this.post = response.data;
+            }).catch(error => {
+                console.log(error);
             });
         },
         newChatChannel(userId) {
