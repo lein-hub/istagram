@@ -61,12 +61,28 @@ class Controller extends BaseController
 
     public function autocomplete($hashtagName)
     {
-        $data = Hashtag::select('name')->where('name', "LIKE", '%' . $hashtagName . '%')->get();
+        $data = Hashtag::with('posts')->where('name', "LIKE", $hashtagName . '%')
+            ->where('name', 'NOT LIKE', '% %')
+            ->limit(5)
+            ->distinct()
+            ->orderBy('name')
+            ->get();
+        $data2 = Hashtag::with('posts')->where('name', "LIKE", '%' . $hashtagName . '%')
+            ->where('name', 'NOT LIKE', $hashtagName . '%')
+            ->limit(5)
+            ->distinct()
+            ->orderBy('name')
+            ->get();
+
+        $data = $data->merge($data2)->take(5);
+        // $data->load('posts');
 
         $hashtags = array();
 
         foreach ($data as $d) {
-            array_push($hashtags, $d->name);
+            if (count($d->posts)) {
+                array_push($hashtags, $d->name);
+            }
         };
 
 

@@ -42,7 +42,7 @@ Route::group(['prefix' => 'post', 'middleware' => ['auth:sanctum', 'verified']],
     Route::get('/{postId}', [PostController::class, 'show'])->name('post.show');
     Route::post('/', [PostController::class, 'create'])->name('post.create');
     Route::delete('/{postId}', [PostController::class, 'destroy'])->name('post.destroy');
-    Route::patch('/', [PostController::class, 'update'])->name('post.update');
+    Route::put('/', [PostController::class, 'update'])->name('post.update');
 });
 
 Route::group(['prefix' => 'comment', 'middleware' => ['auth:sanctum', 'verified']], function () {
@@ -55,6 +55,7 @@ Route::group(['prefix' => 'comment', 'middleware' => ['auth:sanctum', 'verified'
 
 Route::group(['prefix' => 'user', 'middleware' => ['auth:sanctum', 'verified']], function () {
     Route::get('/{userId}', [UserController::class, 'userPage'])->name('user.userPage');
+    Route::get('/getPosts/{userId}', [UserController::class, 'getUserPosts'])->name('user.getUserPosts');
     Route::post('/requestFollow', [UserController::class, 'requestFollow'])->name('user.reqFollow');
     Route::post('/requestUnfollow', [UserController::class, 'requestUnfollow'])->name('user.reqUnfollow');
 });

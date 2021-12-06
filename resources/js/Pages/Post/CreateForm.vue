@@ -74,13 +74,17 @@ export default defineComponent({
         JetDialogModal,
         ImageInput,
     },
-    props: ['form', 'createFormShow'],
+    props: ['createFormShow'],
     emits: [
-        'createPost', 'closeModal'
+        'createPost', 'closeModal', 'getPosts'
     ],
     data() {
         return {
             imagePreview: null,
+            form: this.$inertia.form({
+                content: null,
+                images: null,
+            }),
         }
     },
     methods: {
@@ -92,7 +96,13 @@ export default defineComponent({
                 }
                 this.form.images = images;
             }
-            this.$emit('createPost')
+            this.form.post('/post', {
+                forceFormData: true,
+                onSuccess: () => {
+                    this.$emit('closeModal');
+                    this.$emit('getPosts');
+                },
+            });
         },
         close() {
             this.$emit('closeModal');

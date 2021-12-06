@@ -1,6 +1,6 @@
 <template lang="">
     <app-layout>
-        <div class="lg:w-9/12 lg:mx-auto mt-5 mx-3">
+        <div v-if="posts.length" class="lg:w-9/12 lg:mx-auto mt-5 mx-3">
             <div class="flex">
                 <div class="w-1/3">
                     <button class="block h-40 w-40 rounded-full overflow-hidden m-auto focus:outline-none">
@@ -35,6 +35,9 @@
                     <img class="absolute inset-0 w-full h-full object-cover" :src="getImages(post.images[0].images)[0]" alt="">
                 </div>
             </div>
+        </div>
+        <div v-else>
+            <h1>There is no such posts having hashtag name "{{tagname}}"</h1>
         </div>
     </app-layout>
 </template>

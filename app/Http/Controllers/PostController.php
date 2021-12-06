@@ -116,7 +116,8 @@ class PostController extends Controller
         Post::where('id', $postId)->delete();
 
 
-        return redirect()->route('dashboard');
+        // return redirect()->route('dashboard');
+        return response()->json(['result' => true]);
     }
 
     public function update(Request $request)
@@ -160,8 +161,14 @@ class PostController extends Controller
             ]);
         }
 
-
+        if ($request->goUser) {
+            return redirect()->route('user.userPage', [
+                'userId' => $user->id,
+            ]);
+        }
         return redirect()->route('dashboard');
+
+        // return response()->json(['result' => true]);
     }
 
     function string_to_hashtag_db($string)

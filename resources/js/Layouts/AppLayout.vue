@@ -13,21 +13,16 @@
                             <!-- Logo -->
                             <div class="flex-shrink-0 flex items-center">
                                 <Link :href="route('dashboard')">
-                                    <jet-application-mark class="block h-9 w-auto" />
+                                    <!-- <jet-application-mark class="block h-9 w-auto" /> -->
+                                    <img src="/storage/logo.png" alt="" class="block h-9 w-auto">
                                 </Link>
                             </div>
 
+                        </div>
+
+                        <div class="hidden sm:flex sm:items-center sm:ml-6">
                             <!-- Navigation Links -->
-                            <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex items-center">
-                                <jet-nav-link :href="route('dashboard')" :active="route().current('dashboard')">
-                                    Dashboard
-                                </jet-nav-link>
-                                <jet-nav-link :href="route('chat')" :active="route().current('chat')">
-                                    Chat
-                                </jet-nav-link>
-                                <button @click="showForm" class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium leading-5 text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition">
-                                    New Post
-                                </button>
+                            <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex sm:items-center sm:justify-end">
                                 <div class="pt-2 relative mx-auto text-gray-600">
                                     <form @submit.prevent="search">
                                         <input v-model="keyword" @focus="autocom = true" @blur="autocom = false" v-on:keyup="autocomplete" id="search" class="border-2 border-gray-300 bg-white h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none"
@@ -46,10 +41,16 @@
                                         <a v-for="name in suggestions" @mousedown="$inertia.get('/hashtag/'+name)" :key="name" class="block p-2 text-gray-800 hover:bg-indigo-500 hover:text-white cursor-pointer">#{{name}}</a>
                                     </div>
                                 </div>
+                                <jet-nav-link :href="route('dashboard')" :active="route().current('dashboard')">
+                                    Dashboard
+                                </jet-nav-link>
+                                <jet-nav-link :href="route('chat')" :active="route().current('chat')">
+                                    Chat
+                                </jet-nav-link>
+                                <button @click="showForm" class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium leading-5 text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition">
+                                    New Post
+                                </button>
                             </div>
-                        </div>
-
-                        <div class="hidden sm:flex sm:items-center sm:ml-6">
                             <div class="ml-3 relative">
                                 <!-- Teams Dropdown -->
                                 <jet-dropdown align="right" width="60" v-if="$page.props.jetstream.hasTeamFeatures">
@@ -173,13 +174,16 @@
                         <jet-responsive-nav-link :href="route('dashboard')" :active="route().current('dashboard')">
                             Dashboard
                         </jet-responsive-nav-link>
-                        <jet-nav-link :href="route('chat')" :active="route().current('chat')">
+                        <jet-responsive-nav-link :href="route('chat')" :active="route().current('chat')">
                             Chat
-                        </jet-nav-link>
-                        <jet-nav-link :href="route('post.form')" :active="route().current('post.form')">
+                        </jet-responsive-nav-link>
+                        <jet-responsive-nav-link :href="route('post.form')" :active="route().current('post.form')">
                             New Post
-                        </jet-nav-link>
+                        </jet-responsive-nav-link>
                     </div>
+
+
+
 
                     <!-- Responsive Settings Options -->
                     <div class="pt-4 pb-1 border-t border-gray-200">
@@ -262,6 +266,7 @@
                 <slot></slot>
             </main>
         </div>
+        <create-form :createFormShow="createFormShow" @closeModal="createFormShow = false" @getPosts="$emit('getPosts')"></create-form>
     </div>
 </template>
 
@@ -274,6 +279,7 @@
     import JetNavLink from '@/Jetstream/NavLink.vue'
     import JetResponsiveNavLink from '@/Jetstream/ResponsiveNavLink.vue'
     import { Head, Link } from '@inertiajs/inertia-vue3';
+    import CreateForm from '@/Pages/Post/CreateForm.vue'
 
     export default defineComponent({
         props: {
@@ -290,6 +296,7 @@
             JetNavLink,
             JetResponsiveNavLink,
             Link,
+            CreateForm
         },
 
         data() {
@@ -299,6 +306,7 @@
                 suggestions: [],
                 autocom: false,
                 timer: null,
+                createFormShow: false,
             }
         },
 
@@ -316,7 +324,7 @@
             },
 
             showForm() {
-                this.$emit('formShow');
+                this.createFormShow = true;
             },
 
             search() {

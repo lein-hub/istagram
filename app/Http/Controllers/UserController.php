@@ -14,11 +14,17 @@ class UserController extends Controller
     public function userPage($userId)
     {
         $user = User::where('id', $userId)->with(['followers', 'followings'])->get()[0];
-        $posts = Post::where('user_id', $userId)->with(['user', 'comments.user', 'images', 'votes.user'])->latest()->get();
+
         return Inertia::render('UserPage', [
             'thisUser' => $user,
-            'posts' => $posts,
         ]);
+    }
+
+    public function getUserPosts($userId)
+    {
+        $posts = Post::where('user_id', $userId)->with(['user', 'comments.user', 'images', 'votes.user'])->latest()->get();
+
+        return $posts;
     }
 
     public function requestFollow(Request $request)

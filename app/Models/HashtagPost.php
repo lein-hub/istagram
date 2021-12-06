@@ -11,4 +11,14 @@ class HashtagPost extends Model
     protected $table = 'hashtag_post';
 
     protected $fillable = ['hashtag_id', 'post_id'];
+
+    public function post()
+    {
+        return $this->belongsTo(Post::class);
+    }
+
+    public function hashtag()
+    {
+        return $this->belongsTo(Hashtag::class);
+    }
 }

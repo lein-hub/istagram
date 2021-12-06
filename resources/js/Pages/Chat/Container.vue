@@ -12,11 +12,12 @@
         </template>
 
         <div class="flex">
-            <div class="border-r w-72">
+            <div class="border-r w-72 overflow-auto">
                 <channel-selection :channels="channels" :currentChannel="currentChannel" @channelChanged="setChannel($event)"></channel-selection>
             </div>
             <div class="py-12 w-full">
                 <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                    <div></div>
                     <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                         <chat-container :chats="chats" @getMoreChats="getMoreChats"></chat-container>
                         <input-chat :channel="currentChannel" @messageSent="getChats()"></input-chat>

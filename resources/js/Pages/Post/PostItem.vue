@@ -9,7 +9,7 @@
       </div>
       <!-- <span class="px-2 hover:bg-gray-300 cursor-pointer rounded"><i class="fas fa-ellipsis-h pt-2 text-lg"></i></span> -->
         <div class="relative">
-            <button @click="isOpen = !isOpen" class="relative z-10 block rounded-md bg-white p-2 focus:outline-none">
+            <button @click="isOpen = !isOpen" class="relative z-10 hover:bg-gray-300 block rounded-md bg-white p-2 focus:outline-none">
                 <svg class="h-5 w-5 text-gray-800" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                 <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
                 </svg>
@@ -62,7 +62,7 @@
       </div>
     </div>
     <comment-input :postId="post.id" ref="commentInput" @getCurrentPost="getCurrentPost"></comment-input>
-  <post-show :show="showPost" :propPost="post" :max-width="'6xl'" @closeModal="closeModal" @getCurrentPost="getCurrentPost"></post-show>
+  <post-show :show="showPost" :propPost="post" :max-width="'6xl'" @closeModal="closeModal" @getCurrentPost="getCurrentPost" @getPosts="getPosts"></post-show>
   <user-list :show="showList" :votes="post.votes" @closeListModal="closeListModal" :max-width="'sm'"></user-list>
   <edit-form :show="showEdit" :post="post" @closeEditModal="closeEditModal" :images="imageArray" @getPosts="getPosts"></edit-form>
   </div>
@@ -161,11 +161,21 @@ export default defineComponent({
             this.showEdit = false;
         },
         deletePost(postId) {
-            this.$inertia.form({
-                postId: this.post.id,
-            }).delete('/post/' + postId, {
-                onSuccess: this.$emit('getPosts'),
-            });
+            // this.$inertia.form({
+            //     postId: this.post.id,
+            // }).delete('/post/' + postId, {
+            //     onSuccess: () => {
+            //         setTimeout(this.$emit('getPosts'), 300);
+            //     },
+            // });
+
+            axios.delete('/post/'+postId)
+            .then(response =>{
+                this.$emit('getPosts');
+            })
+            .catch(error => {
+                console.log(error);
+            })
         },
         clickLike() {
             axios.post('/vote', {
@@ -205,6 +215,11 @@ export default defineComponent({
         getCurrentPost(post) {
             console.log('getCurrentPost');
             this.post = post;
+        }
+    },
+    watch: {
+        propPost(val, oldVal) {
+            this.post = val;
         }
     },
 })

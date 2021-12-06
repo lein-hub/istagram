@@ -56,23 +56,11 @@
                             </span>
                         </li>
                     </ul>
-                    <!-- <div class="my-3">
-                        <h1 class="font-extrabold">
-                            박동재
-                        </h1><br>
-                    </div> -->
                 </section>
             </div>
-            <div class="bg-green-300 mt-16 grid justify-items-center">
-                <div class="bg-green-500 w-1/3 flex px-3 justify-between">
-                    <button>1</button>
-                    <button>2</button>
-                    <button>3</button>
-                </div>
-            </div>
-            <div class="grid grid-cols-3 lg:gap-7 gap-1">
+            <div class="grid grid-cols-3 lg:gap-7 gap-1 mt-5">
                 <div v-for="post in posts" :key="post.id" class="relative h-0 pb-2/3 pt-1/3 bg-black cursor-pointer">
-                    <post-preview :post="post"></post-preview>
+                    <post-preview :post="post" @getPosts="getPosts"></post-preview>
                 </div>
             </div>
         </div>
@@ -88,7 +76,6 @@ import UserList from './UserList.vue'
 export default {
     props: [
         'thisUser',
-        'posts',
     ],
     components: {
         AppLayout,
@@ -97,10 +84,25 @@ export default {
     },
     data() {
         return {
-            isMe: false,
-            isFollowed: false,
             showFollowings: false,
             showFollowers: false,
+            posts: [],
+        }
+    },
+    computed: {
+        isMe() {
+            if (this.thisUser.id == this.$page.props.user.id) {
+                return true;
+            }
+            return false;
+        },
+        isFollowed() {
+            for (let key in this.thisUser.followers) {
+                if (this.thisUser.followers[key].id == this.$page.props.user.id) {
+                    return true;
+                }
+            }
+            return false;
         }
     },
     methods: {
@@ -118,17 +120,17 @@ export default {
                 onSuccess: () => this.isFollowed = false,
             });
         },
+        getPosts() {
+            axios.get('/user/getPosts/'+this.thisUser.id).then(response => {
+                this.posts = response.data;
+                console.log('userPage에서 getPosts메소드 발동');
+            }).catch(error=> {
+                console.log(error);
+            });
+        },
     },
-    created() {
-        for (let key in this.thisUser.followers) {
-            if (this.thisUser.followers[key].id == this.$page.props.user.id) {
-                this.isFollowed = true;
-                break;
-            }
-        }
-        if (this.thisUser.id == this.$page.props.user.id) {
-            this.isMe = true;
-        }
+    mounted() {
+        this.getPosts();
     },
 }
 </script>

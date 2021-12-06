@@ -59,7 +59,7 @@ export default defineComponent({
         JetDialogModal,
         ImageInput,
     },
-    props: ['show', 'post', 'images'],
+    props: ['show', 'post', 'images', 'goUser'],
     emits: [
         'closeEditModal',
         'getPosts',
@@ -68,11 +68,12 @@ export default defineComponent({
         return {
             imagePreview: null,
             form: this.$inertia.form({
-                _method: 'PATCH',
+                _method: 'PUT',
                 images: null,
                 uploadedImages: null,
                 content: this.post.content,
                 postId: this.post.id,
+                goUser: false,
             }),
         }
     },
@@ -93,6 +94,10 @@ export default defineComponent({
             }
             console.log(this.form);
 
+            if (this.goUser) {
+                this.form.goUser = true;
+            }
+
             this.form.post('/post', {
                 preserveScroll: true,
                 forceFormData: true,
@@ -101,6 +106,16 @@ export default defineComponent({
                     this.$emit('getPosts');
                 }
             });
+
+            // axios.put('/post', this.form, )
+            // .then(response => {
+            //     console.log(response);
+            //     // this.close();
+            //     // this.$emit('getPosts');
+            // })
+            // .catch(error => {
+            //     console.log(error);
+            // })
         },
         close() {
             this.$emit('closeEditModal');

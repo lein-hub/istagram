@@ -15,7 +15,18 @@
                                 </div>
                                 <span @click="showUserPage(post.user.id)" class="cursor-pointer pt-1 ml-2 font-bold text-sm">{{post.user.name}}</span>
                             </div>
-                            <span class="px-2 hover:bg-gray-300 cursor-pointer rounded"><i class="fas fa-ellipsis-h pt-2 text-lg"></i></span>
+                            <!-- <span class="px-2 hover:bg-gray-300 cursor-pointer rounded"><i class="fas fa-ellipsis-h pt-2 text-lg"></i></span> -->
+                            <div v-if="isMine" class="relative">
+                                <button @click="isOpen = !isOpen" class="relative hover:bg-gray-300 z-10 block rounded-md bg-white p-2 focus:outline-none">
+                                    <svg class="h-5 w-5 text-gray-800" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                    </svg>
+                                </button>
+                                <div v-if="isOpen" class="absolute right-0 w-32 bg-white rounded-lg py-2 shadow-xl z-20">
+                                    <a @click="deletePost(post.id)" class="block p-2 text-center text-gray-800 hover:bg-indigo-500 hover:text-white cursor-pointer">삭제</a>
+                                    <a @click="showEdit = true" class="block p-2 text-center text-gray-800 hover:bg-indigo-500 hover:text-white cursor-pointer">수정</a>
+                                </div>
+                            </div>
                         </div>
                         <div class="p-3 flex-grow overflow-auto">
                             <div class="pt-1">
@@ -61,6 +72,7 @@
                     </div>
                 </div>
             </div>
+            <edit-form :show="showEdit" :post="post" @closeEditModal="showEdit = false" :images="images" @getPosts="$emit('getPosts')" :goUser="goUser"></edit-form>
         </template>
     </jet-dialog-modal>
 </template>
@@ -69,19 +81,22 @@ import { defineComponent } from 'vue'
 import JetDialogModal from '@/Jetstream/DialogModal.vue'
 import ImageCarousel from '@/Pages/Post/ImageCarousel.vue'
 import CommentInput from '@/Pages/Post/CommentInput.vue'
+import EditForm from '@/Pages/Post/EditForm.vue'
 
 export default defineComponent({
     components: {
         JetDialogModal,
         ImageCarousel,
         CommentInput,
+        EditForm,
     },
     props: [
         'show',
         'propPost',
+        'goUser'
     ],
     emits: [
-        'closeModal', 'getCurrentPost'
+        'closeModal', 'getCurrentPost', 'getPosts'
     ],
     data() {
         return {
@@ -90,6 +105,8 @@ export default defineComponent({
                 postId: this.propPost.id
             }),
             post: this.propPost,
+            isOpen: false,
+            showEdit: false,
         }
     },
     computed: {
@@ -147,6 +164,21 @@ export default defineComponent({
         getCurrentPost(post) {
             this.post = post;
             this.$emit('getCurrentPost');
+        },
+        deletePost(postId) {
+            axios.delete('/post/'+postId)
+            .then(response =>{
+                this.$emit('getPosts');
+                this.close();
+            })
+            .catch(error => {
+                console.log(error);
+            })
+        },
+    },
+    watch: {
+        propPost(val, oldVal) {
+            this.post = val;
         }
     },
 });
