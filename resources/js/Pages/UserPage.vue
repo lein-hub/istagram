@@ -1,6 +1,6 @@
 <template lang="">
     <app-layout>
-        <div class="lg:w-9/12 lg:mx-auto mt-5 mx-3">
+        <div v-if="!isLoading" class="lg:w-9/12 lg:mx-auto mt-5 mx-3">
             <div class="flex">
                 <div class="w-1/3">
                     <button class="block h-40 w-40 mx-auto border-solid border-6 border-gray-100 rounded-full overflow-hidden focus:outline-none">
@@ -64,6 +64,9 @@
                 </div>
             </div>
         </div>
+        <div v-else class="flex h-screen items-center justify-center">
+            <img src="/storage/loading.gif" alt="">
+        </div>
         <user-list :users="thisUser.followings" :title="'follow'" :show="showFollowings" @close="showFollowings = false"></user-list>
         <user-list :users="thisUser.followers" :title="'follower'" :show="showFollowers" @close="showFollowers = false"></user-list>
     </app-layout>
@@ -87,6 +90,7 @@ export default {
             showFollowings: false,
             showFollowers: false,
             posts: [],
+            isLoading: false,
         }
     },
     computed: {
@@ -121,9 +125,11 @@ export default {
             });
         },
         getPosts() {
+            this.isLoading = true;
             axios.get('/user/getPosts/'+this.thisUser.id).then(response => {
                 this.posts = response.data;
                 console.log('userPage에서 getPosts메소드 발동');
+                this.isLoading = false;
             }).catch(error=> {
                 console.log(error);
             });

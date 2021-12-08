@@ -20,12 +20,12 @@
                     <div></div>
                     <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                         <chat-container :chats="chats" @getMoreChats="getMoreChats"></chat-container>
-                        <input-chat :channel="currentChannel" @messageSent="getChats()"></input-chat>
+                        <input-chat :channel="currentChannel" @messageSent="getChats"></input-chat>
                     </div>
                 </div>
             </div>
         </div>
-        <user-list :show="listShow" :users="followings" @closeListModal="close" :max-width="'sm'"></user-list>
+        <user-list :show="listShow" :users="followings" @closeListModal="close" @getChannels="getChannels" :max-width="'sm'"></user-list>
     </app-layout>
 </template>
 <script>
@@ -65,7 +65,8 @@ export default defineComponent ({
                 window.Echo.private('chat.'+this.currentChannel.id).listen('.message.new', (e)=>{
                     console.log('listened!!');
                     // vm.getChats();
-                    vm.chats = [e.chatMessage, ...vm.chats];
+                    // console.log(e);
+                    vm.chats.data = [e.chatMessage, ...vm.chats.data];
                 })
             }
         },
@@ -73,6 +74,7 @@ export default defineComponent ({
             window.Echo.leave('chat.' + channel.id);
         },
         getChannels() {
+            console.log('getChannels!!!!');
             axios.get('/dm/channels')
             .then(response=>{
                 console.log(response.data);
@@ -101,7 +103,7 @@ export default defineComponent ({
             })
             .catch(error=>{
                 console.log(error);
-            })
+            });
         },
         getMoreChats() {
             if (this.chats.current_page == this.chats.last_page) {
@@ -115,13 +117,16 @@ export default defineComponent ({
                 console.log(error);
             });
         },
+        // messageSent(data) {
+        //     this.chats.data = [data, ...this.chats.data];
+        // },
         close() {
             this.listShow = false;
         }
     },
     watch: {
         currentChannel(val, oldVal) {
-            if (oldVal.id) {
+            if (oldVal) {
                 this.disconnect(oldVal);
             }
             this.connect();

@@ -2,9 +2,7 @@
   <div class="rounded overflow-hidden border w-full bg-white mt-5 md:mx-0 lg:mx-0">
     <div class="w-full flex justify-between p-3">
       <div class="flex">
-        <div @click="showUserPage(post.user.id)" class="cursor-pointer rounded-full h-8 w-8 bg-gray-500 flex items-center justify-center overflow-hidden">
-          <img :src="post.user.profile_photo_url" alt="profilepic">
-        </div>
+        <profile-photo :user="post.user"></profile-photo>
         <span @click="showUserPage(post.user.id)" class="cursor-pointer pt-1 ml-2 font-bold text-sm">{{post.user.name}}</span>
       </div>
       <!-- <span class="px-2 hover:bg-gray-300 cursor-pointer rounded"><i class="fas fa-ellipsis-h pt-2 text-lg"></i></span> -->
@@ -57,7 +55,7 @@
       <div v-if="post.comments.length > 2" @click="showPost=true" class="text-sm mb-2 text-gray-400 cursor-pointer font-medium">View all {{ post.comments.length }} comments</div>
       <div class="mb-2">
         <div class="mb-2 text-sm" v-for="comment in post.comments.slice(0,2)" :key="comment.id">
-          <comment-item :comment="comment" @showUserPage="showUserPage" @getCurrentPost="getCurrentPost"></comment-item>
+          <comment-item :comment="comment" :postId="post.id" @getCurrentPost="getCurrentPost"></comment-item>
         </div>
       </div>
     </div>
@@ -71,6 +69,7 @@
 <script>
 import { defineComponent } from 'vue'
 import PostShow from '@/Pages/Post/PostShow.vue'
+import ProfilePhoto from '@/Components/ProfilePhoto.vue'
 import UserList from '@/Pages/Post/UserList.vue'
 import ImageCarousel from '@/Pages/Post/ImageCarousel.vue'
 import EditForm from '@/Pages/Post/EditForm.vue'
@@ -82,6 +81,7 @@ import axios from 'axios'
 export default defineComponent({
     components: {
         PostShow,
+        ProfilePhoto,
         UserList,
         ImageCarousel,
         EditForm,
@@ -213,7 +213,6 @@ export default defineComponent({
             this.$emit('getPosts');
         },
         getCurrentPost(post) {
-            console.log('getCurrentPost');
             this.post = post;
         }
     },

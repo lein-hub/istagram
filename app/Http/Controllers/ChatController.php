@@ -17,7 +17,7 @@ class ChatController extends Controller
     {
         $followings = User::where('id', Auth::user()->id)->with('followings')->get()[0]->followings;
         return Inertia::render('Chat/Container', [
-            'followings' => $followings,
+            'followings' => fn () => $followings,
         ]);
     }
 

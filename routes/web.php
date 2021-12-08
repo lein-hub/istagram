@@ -34,6 +34,8 @@ Route::get('/', function () {
 Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', [Controller::class, 'index'])->name('dashboard');
 Route::middleware(['auth:sanctum', 'verified'])->get('/getPosts', [Controller::class, 'getPosts'])->name('getPosts');
 Route::middleware(['auth:sanctum', 'verified'])->get('/hashtag/{hashtagName}', [Controller::class, 'explore'])->name('explore');
+Route::middleware(['auth:sanctum', 'verified'])->get('/hashtag/getPosts/{hashtagName}', [Controller::class, 'getExPosts'])->name('getExPosts');
+
 Route::middleware(['auth:sanctum', 'verified'])->get('/autocomplete/{hashtagName}', [Controller::class, 'autocomplete'])->name('autocomplete');
 
 Route::group(['prefix' => 'post', 'middleware' => ['auth:sanctum', 'verified']], function () {
@@ -49,7 +51,7 @@ Route::group(['prefix' => 'comment', 'middleware' => ['auth:sanctum', 'verified'
     Route::get('/{postId}', [CommentController::class, 'getComments'])->name('comment');
     Route::get('/{commentId}/edit', [CommentController::class, 'editForm'])->name('comment.edit');
     Route::post('/', [CommentController::class, 'store'])->name('comment.store');
-    Route::delete('/', [CommentController::class, 'destroy'])->name('comment.destroy');
+    Route::delete('/{postId}/{commentId}', [CommentController::class, 'destroy'])->name('comment.destroy');
     Route::patch('/', [CommentController::class, 'update'])->name('comment.update');
 });
 

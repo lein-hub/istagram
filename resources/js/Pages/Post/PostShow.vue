@@ -6,13 +6,11 @@
                     <img v-if="images.length < 2" class="object-contain m-auto h-full bg-cover" :src="images[0]">
                     <image-carousel v-else :images="images"></image-carousel>
                 </div>
-                <div class="w-96 min-w-max">
+                <div class="w-96">
                     <div class="rounded overflow-hidden border bg-white md:mx-0 lg:mx-0 flex flex-col h-full">
                         <div class="w-auto flex justify-between p-3 border-b border-gray-300">
                             <div class="flex">
-                                <div @click="showUserPage(post.user.id)" class="cursor-pointer rounded-full h-8 w-8 bg-gray-500 flex items-center justify-center overflow-hidden">
-                                    <img :src="post.user.profile_photo_url" alt="profilepic">
-                                </div>
+                                <profile-photo :user="post.user"></profile-photo>
                                 <span @click="showUserPage(post.user.id)" class="cursor-pointer pt-1 ml-2 font-bold text-sm">{{post.user.name}}</span>
                             </div>
                             <!-- <span class="px-2 hover:bg-gray-300 cursor-pointer rounded"><i class="fas fa-ellipsis-h pt-2 text-lg"></i></span> -->
@@ -31,18 +29,19 @@
                         <div class="p-3 flex-grow overflow-auto">
                             <div class="pt-1">
                                 <div class="mb-2 text-sm flex">
-                                    <div @click="showUserPage(post.user.id)" class="mb-3 cursor-pointer rounded-full h-8 w-8 bg-gray-500 flex items-center mr-3 justify-center overflow-hidden">
-                                        <img :src="post.user.profile_photo_url" alt="profilepic">
-                                    </div>
-                                    <span @click="showUserPage(post.user.id)" class="font-medium mr-2 font-bold cursor-pointer">{{post.user.name}}</span> {{ post.content }}
+                                    <profile-photo :user="post.user"></profile-photo>
+                                    <span @click="showUserPage(post.user.id)" class="mr-2 font-bold cursor-pointer">{{post.user.name}}</span> {{ post.content }}
                                 </div>
                             </div>
                             <div class="mb-2">
-                                <div class="mb-5 text-sm flex" v-for="comment in post.comments" :key="comment.id">
-                                    <div @click="showUserPage(comment.user.id)" class="cursor-pointer rounded-full h-8 w-8 bg-gray-500 flex items-center mr-3 justify-center overflow-hidden">
-                                        <img :src="comment.user.profile_photo_url" alt="profilepic">
-                                    </div>
-                                    <span @click="showUserPage(comment.user.id)" class="font-medium mr-2 font-bold cursor-pointer">{{ comment.user.name }}</span> {{ comment.content }}
+                                <div class="mb-5 text-sm flex items-center" v-for="comment in post.comments" :key="comment.id">
+                                    <profile-photo :user="comment.user"></profile-photo>
+                                    <span @click="showUserPage(comment.user.id)" class="mr-2 font-bold cursor-pointer">{{ comment.user.name }}</span> {{ comment.content }}
+                                    <button v-if="comment.user.id == $page.props.user.id" @click="deleteComment(comment.id)" class="hover:text-red-600 flex items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -79,6 +78,7 @@
 <script>
 import { defineComponent } from 'vue'
 import JetDialogModal from '@/Jetstream/DialogModal.vue'
+import ProfilePhoto from '@/Components/ProfilePhoto.vue'
 import ImageCarousel from '@/Pages/Post/ImageCarousel.vue'
 import CommentInput from '@/Pages/Post/CommentInput.vue'
 import EditForm from '@/Pages/Post/EditForm.vue'
@@ -87,6 +87,7 @@ export default defineComponent({
     components: {
         JetDialogModal,
         ImageCarousel,
+        ProfilePhoto,
         CommentInput,
         EditForm,
     },
@@ -163,7 +164,7 @@ export default defineComponent({
         },
         getCurrentPost(post) {
             this.post = post;
-            this.$emit('getCurrentPost');
+            this.$emit('getCurrentPost', post);
         },
         deletePost(postId) {
             axios.delete('/post/'+postId)
@@ -175,6 +176,16 @@ export default defineComponent({
                 console.log(error);
             })
         },
+        deleteComment(commentId) {
+            axios.delete(`/comment/${this.post.id}/${commentId}`)
+            .then(response => {
+                this.post = response.data;
+                this.$emit('getCurrentPost', response.data);
+            })
+            .catch(error => {
+                console.log(error);
+            })
+        }
     },
     watch: {
         propPost(val, oldVal) {

@@ -37,14 +37,17 @@ class CommentController extends Controller
         return $post;
     }
 
-    public function destroy(Request $request)
+    public function destroy($postId, $commentId)
     {
-        $comment = Comment::where('id', $request->id);
-        $postId = $request->post_id;
-        $comment->delete();
+        Comment::find($commentId)->delete();
+
+        $post = Post::where('id', $postId)->first();
+        $post->load(['user', 'comments.user', 'images', 'votes.user']);
 
 
-        return redirect()->route('post.show', ['postId' => $postId]);
+        // return redirect()->route('post.show', ['postId' => $postId]);
+        // return response()->json(['result' => true]);
+        return $post;
     }
 
     public function update(Request $request)

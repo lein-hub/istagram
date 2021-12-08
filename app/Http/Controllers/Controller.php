@@ -51,12 +51,18 @@ class Controller extends BaseController
 
     public function explore($hashtagName)
     {
-        $posts = Hashtag::where('name', $hashtagName)->first()->posts()->with(['user', 'comments.user', 'images'])->orderBy('created_at', 'desc')->get();
 
         return Inertia::render('Explore', [
-            'posts' => fn () => $posts,
+            // 'posts' => fn () => $posts,
             'tagname' => fn () => $hashtagName,
         ]);
+    }
+
+    public function getExPosts($hashtagName)
+    {
+        $posts = Hashtag::where('name', $hashtagName)->first()->posts()->with(['user', 'comments.user', 'images', 'votes.user'])->orderBy('created_at', 'desc')->get();
+
+        return $posts;
     }
 
     public function autocomplete($hashtagName)

@@ -25,7 +25,9 @@ export default {
             .then(response => {
                 if(response.status == 201) {
                     this.message = '';
-                    this.$emit('messageSent');
+                    console.log('data: ', response.data);
+
+                    this.$emit('messageSent', response.data);
                 }
             })
             .catch(error=>{

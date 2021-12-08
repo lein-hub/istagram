@@ -39,7 +39,7 @@ export default defineComponent ({
         JetDialogModal,
     },
     emits: [
-        'closeListModal'
+        'closeListModal', 'getChannels'
     ],
     props: [
         'users', 'show'
@@ -52,6 +52,8 @@ export default defineComponent ({
             this.$inertia.form({
                 userId: userId,
             }).post('/dm/channel');
+            this.$emit('getChannels');
+            this.close();
         },
     },
 })

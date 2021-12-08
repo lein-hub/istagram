@@ -1,9 +1,7 @@
 <template lang="">
     <div>
         <div v-if="!isMe(chat)" class="flex items-center">
-            <div @click="showUserPage(chat.user.id)" class="cursor-pointer rounded-full h-8 w-8 m-3 bg-gray-500 flex items-center justify-center overflow-hidden">
-                <img :src="chat.user.profile_photo_url" alt="profilepic">
-            </div>
+            <profile-photo :user="chat.user"></profile-photo>
             <span class="p-3 bg-white rounded-3xl border border-gray-200 inline-block">
                 {{ chat.content }}
             </span>
@@ -12,17 +10,19 @@
             <span class="p-3 bg-gray-200 rounded-3xl inline-block">
                 {{ chat.content }}
             </span>
-            <div @click="showUserPage(chat.user.id)" class="cursor-pointer rounded-full h-8 w-8 m-3 bg-gray-500 flex items-center justify-center overflow-hidden">
-                <img :src="chat.user.profile_photo_url" alt="profilepic">
-            </div>
+            <profile-photo :user="chat.user"></profile-photo>
         </div>
     </div>
 </template>
 <script>
+import ProfilePhoto from '@/Components/ProfilePhoto.vue'
 export default {
     props: [
         'chat'
     ],
+    components: {
+        ProfilePhoto,
+    },
     methods: {
         isMe(chat) {
             if (chat.user.id == this.$page.props.user.id) {

@@ -30,11 +30,19 @@
             </div>
 
 
-            <div class="grid grid-cols-3 mt-5 lg:gap-7 gap-1">
+            <!-- <div class="grid grid-cols-3 mt-5 lg:gap-7 gap-1">
                 <div v-for="post in posts" :key="post.id" class="relative h-0 pb-2/3 pt-1/3 cursor-pointer">
                     <img class="absolute inset-0 w-full h-full object-cover" :src="getImages(post.images[0].images)[0]" alt="">
                 </div>
+            </div> -->
+            <div class="grid grid-cols-3 lg:gap-7 gap-1 mt-5">
+                <div v-for="post in posts" :key="post.id" class="relative h-0 pb-2/3 pt-1/3 bg-black cursor-pointer">
+                    <post-preview :post="post" @getPosts="getPosts"></post-preview>
+                </div>
             </div>
+        </div>
+        <div v-else-if="isLoading" class="flex h-screen items-center justify-center">
+            <img src="/storage/loading.gif" alt="">
         </div>
         <div v-else>
             <h1>There is no such posts having hashtag name "{{tagname}}"</h1>
@@ -43,19 +51,41 @@
 </template>
 <script>
 import AppLayout from '@/Layouts/AppLayout.vue'
+import PostPreview from '@/Pages/PostPreview.vue'
 
 export default {
     props: [
-        'posts', 'tagname'
+        'tagname'
     ],
     components: {
         AppLayout,
+        PostPreview,
+    },
+    data() {
+        return {
+            posts: [],
+            isLoading: false,
+        }
     },
     methods: {
         getImages(data) {
             let images = JSON.parse(data);
             return images;
+        },
+        getPosts() {
+            this.isLoading = true,
+            axios.get('/hashtag/getPosts/'+this.tagname)
+            .then(response => {
+                this.posts = response.data;
+                this.isLoading = false;
+            })
+            .catch(error => {
+                console.log(error);
+            })
         }
+    },
+    created() {
+        this.getPosts();
     },
 }
 </script>

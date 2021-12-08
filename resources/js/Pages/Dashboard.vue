@@ -1,13 +1,17 @@
 <template>
     <app-layout title="Dashboard" @formShow="formShow" @getPosts="getPosts">
-        <template #header>
+        <!-- <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 Dashboard
             </h2>
-        </template>
+        </template> -->
 
-
-        <post-list :posts="posts" @getMorePosts="getMorePosts" @getPosts="getPosts"></post-list>
+        <div v-if="!isLoading">
+            <post-list :posts="posts" @getMorePosts="getMorePosts" @getPosts="getPosts"></post-list>
+        </div>
+        <div v-else class="flex h-screen items-center justify-center">
+            <img src="/storage/loading.gif" alt="">
+        </div>
 
 
     </app-layout>
@@ -29,6 +33,7 @@
         data() {
             return {
                 posts: [],
+                isLoading: false,
             }
         },
         methods: {
@@ -36,11 +41,13 @@
                 this.createFormShow = true;
             },
             getPosts() {
+                this.isLoading = true;
                 axios.get('/getPosts').then(response => {
                     this.posts = response.data;
                     console.log('this.posts',this.posts);
                     console.log('response.data',response.data);
                     console.log('getPost');
+                    this.isLoading = false;
                 }).catch(error=> {
                     console.log(error);
                 });
