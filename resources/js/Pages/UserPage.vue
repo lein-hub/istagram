@@ -35,7 +35,7 @@
                             <span class="">
                                 게시물
                                 <span class="font-extrabold">
-                                    {{ posts.data.length }}
+                                    {{ postCount }}
                                 </span>
                             </span>
                         </li>
@@ -56,6 +56,12 @@
                             </span>
                         </li>
                     </ul>
+                    <div class="flex my-3 font-bold">
+                        {{ thisUser.description?.nick ? thisUser.description.nick : '' }}
+                    </div>
+                    <div class="flex my-3">
+                        {{ thisUser.description?.description ? thisUser.description.description : '' }}
+                    </div>
                 </section>
             </div>
             <div class="grid grid-cols-3 lg:gap-7 gap-1 mt-5">
@@ -81,7 +87,7 @@ import UserList from './UserList.vue'
 
 export default {
     props: [
-        'thisUser',
+        'thisUser', 'postCount'
     ],
     components: {
         AppLayout,

@@ -2,7 +2,7 @@
     <jet-dialog-modal :show="show" @close="close">
         <template #content>
             <div class="flex" style="height: 90vh">
-                <div class="bg-black flex-grow h-full max-w-3xl">
+                <div class="bg-black flex-grow max-w-3xl">
                     <img v-if="images.length < 2" class="object-contain m-auto h-full bg-cover" :src="images[0]">
                     <image-carousel v-else :images="images"></image-carousel>
                 </div>
@@ -29,20 +29,22 @@
                         <div class="p-3 flex-grow overflow-auto">
                             <div class="pt-1">
                                 <div class="mb-2 text-sm inline-flex items-center">
-                                    <profile-photo :user="post.user"></profile-photo>
-                                    <span @click="showUserPage(post.user.id)" class="mr-2 font-bold cursor-pointer">{{post.user.name}}</span>
-                                    <span>
+                                    <div class="py-2">
+                                        <profile-photo :user="post.user"></profile-photo>
+                                    </div>
+                                    <div>
+                                        <span @click="showUserPage(post.user.id)" class="mx-2 font-bold cursor-pointer">{{post.user.name}}</span>
                                         <template v-for="(item, index) in splittedContent" :key="index">
                                             <Link v-if="isHashtag(item)" :href="gethref(item)" class="text-blue-500 cursor-pointer">{{item}}&nbsp;</Link>
                                             <template v-else>{{item}}&nbsp;</template>
                                         </template>
-                                    </span>
+                                    </div>
                                 </div>
                             </div>
                             <div class="mb-2">
                                 <div class="mb-5 text-sm flex items-center" v-for="comment in post.comments" :key="comment.id">
                                     <profile-photo :user="comment.user"></profile-photo>
-                                    <span @click="showUserPage(comment.user.id)" class="mr-2 font-bold cursor-pointer">{{ comment.user.name }}</span> {{ comment.content }}
+                                    <span @click="showUserPage(comment.user.id)" class="mx-2 font-bold cursor-pointer">{{ comment.user.name }}</span> {{ comment.content }}
                                     <button v-if="comment.user.id == $page.props.user.id" @click="deleteComment(comment.id)" class="hover:text-red-600 flex items-center">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />

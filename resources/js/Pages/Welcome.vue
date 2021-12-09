@@ -191,6 +191,12 @@
             canRegister: Boolean,
             laravelVersion: String,
             phpVersion: String,
-        }
+        },
+
+        beforeCreate() {
+            if (this.canLogin) {
+                this.$inertia.get(route('login'));
+            }
+        },
     })
 </script>

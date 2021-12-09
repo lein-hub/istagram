@@ -14,9 +14,11 @@ class UserController extends Controller
     public function userPage($userId)
     {
         $user = User::where('id', $userId)->with(['followers', 'followings'])->get()[0];
+        $postCount = Post::where('user_id', $userId)->get()->count();
 
         return Inertia::render('UserPage', [
             'thisUser' => $user,
+            'postCount' => $postCount,
         ]);
     }
 

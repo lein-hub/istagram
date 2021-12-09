@@ -24,7 +24,7 @@
                             <span class="">
                                 게시물
                                 <span class="font-extrabold">
-                                    {{ posts.data.length }}
+                                    {{ postCount }}
                                 </span>
                             </span>
                         </li>
@@ -58,7 +58,7 @@ import PostPreview from '@/Pages/PostPreview.vue'
 
 export default {
     props: [
-        'tagname'
+        'tagname', 'postCount'
     ],
     components: {
         AppLayout,

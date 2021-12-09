@@ -54,6 +54,21 @@
                 <jet-input id="email" type="email" class="mt-1 block w-full" v-model="form.email" />
                 <jet-input-error :message="form.errors.email" class="mt-2" />
             </div>
+
+            <!-- Nick -->
+            <div class="col-span-6 sm:col-span-4">
+                <jet-label for="nick" value="Nickname" />
+                <jet-input id="nick" type="text" class="mt-1 block w-full" v-model="form.nick" />
+                <jet-input-error :message="form.errors.email" class="mt-2" />
+            </div>
+
+            <!-- Description -->
+            <div class="col-span-6 sm:col-span-4">
+                <jet-label for="description" value="Description" />
+                <!-- <jet-textarea id="description" type="textarea" class="mt-1 block w-full" v-model="form.description"></jet-textarea> -->
+                <textarea class="border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm" id="description" cols="30" rows="10" v-model="form.description"></textarea>
+                <jet-input-error :message="form.errors.description" class="mt-2" />
+            </div>
         </template>
 
         <template #actions>
@@ -73,6 +88,7 @@
     import JetButton from '@/Jetstream/Button.vue'
     import JetFormSection from '@/Jetstream/FormSection.vue'
     import JetInput from '@/Jetstream/Input.vue'
+    import JetTextarea from '@/Jetstream/Textarea.vue'
     import JetInputError from '@/Jetstream/InputError.vue'
     import JetLabel from '@/Jetstream/Label.vue'
     import JetActionMessage from '@/Jetstream/ActionMessage.vue'
@@ -84,6 +100,7 @@
             JetButton,
             JetFormSection,
             JetInput,
+            JetTextarea,
             JetInputError,
             JetLabel,
             JetSecondaryButton,
@@ -98,6 +115,8 @@
                     name: this.user.name,
                     email: this.user.email,
                     photo: null,
+                    nick: this.user.description?.nick ? this.user.description.nick : '',
+                    description: this.user.description?.description ? this.user.description.description : '',
                 }),
 
                 photoPreview: null,

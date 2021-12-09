@@ -122,6 +122,7 @@ class PostController extends Controller
 
     public function update(Request $request)
     {
+        // return $request;
         $request->validate([
             'content' => 'required',
         ]);

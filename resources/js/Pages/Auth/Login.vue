@@ -3,7 +3,9 @@
 
     <jet-authentication-card>
         <template #logo>
-            <jet-authentication-card-logo />
+            <!-- <jet-authentication-card-logo /> -->
+            <!-- <link rel="icon" type="image/png" sizes="96x96" href="/storage/icon/favicon-96x96.png"> -->
+            <img src="/storage/icon/favicon-96x96.png" alt="">
         </template>
 
         <jet-validation-errors class="mb-4" />
@@ -30,7 +32,11 @@
                 </label>
             </div>
 
-            <div class="flex items-center justify-end mt-4">
+            <div class="flex items-center justify-between mt-4">
+                <Link :href="route('register')" class="underline text-sm text-gray-600 hover:text-gray-900">
+                    Didn't you sign up yet?
+                </Link>
+
                 <Link v-if="canResetPassword" :href="route('password.request')" class="underline text-sm text-gray-600 hover:text-gray-900">
                     Forgot your password?
                 </Link>
@@ -69,7 +75,7 @@
 
         props: {
             canResetPassword: Boolean,
-            status: String
+            status: String,
         },
 
         data() {

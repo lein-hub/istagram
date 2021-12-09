@@ -51,10 +51,12 @@ class Controller extends BaseController
 
     public function explore($hashtagName)
     {
+        $postCount = Hashtag::where('name', $hashtagName)->first()->posts()->get()->count();
 
         return Inertia::render('Explore', [
             // 'posts' => fn () => $posts,
             'tagname' => fn () => $hashtagName,
+            'postCount' => fn () => $postCount,
         ]);
     }
 

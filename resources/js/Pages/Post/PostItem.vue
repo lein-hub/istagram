@@ -45,8 +45,8 @@
       </div>
       <div class="pt-1">
         <div class="mb-3 text-sm">
-          <span @click="showUserPage(post.user.id)" class="font-medium mr-2 font-bold cursor-pointer">{{post.user.name}}</span>
           <span>
+            <span @click="showUserPage(post.user.id)" class="mr-2 font-bold cursor-pointer">{{post.user.name}}</span>
             <template v-for="(item, index) in splittedContent" :key="index">
                 <Link v-if="isHashtag(item)" :href="gethref(item)" class="text-blue-500 cursor-pointer">{{item}}&nbsp;</Link>
                 <template v-else>{{item}}&nbsp;</template>

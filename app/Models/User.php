@@ -29,6 +29,18 @@ class User extends Authenticatable
         'password',
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::created(function ($user) {
+            $user->description()->create([
+                'nick' => $user->name,
+                'description' => 'No description',
+            ]);
+        });
+    }
+
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -58,6 +70,8 @@ class User extends Authenticatable
     protected $appends = [
         'profile_photo_url',
     ];
+
+    protected $with = ['description'];
 
     public function posts()
     {
@@ -93,5 +107,10 @@ class User extends Authenticatable
     public function followers()
     {
         return $this->belongsToMany(User::class, 'follows', 'following_id', 'follower_id', 'id', 'id', 'users');
+    }
+
+    public function description()
+    {
+        return $this->hasOne(Description::class);
     }
 }

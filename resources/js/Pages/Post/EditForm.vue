@@ -79,14 +79,18 @@ export default defineComponent({
     },
     methods: {
         updatePost() {
+            // let formData = new FormData;
+
             if (this.$refs.images.files.length) {
                 let uploadedImages = new Array();
                 let images = new Array();
                 for (let i=0; i < this.$refs.images.files.length; i++) {
                     if (this.$refs.images.files[i].file) {
                         images.push(this.$refs.images.files[i].file);
+                        // formData.append('images', this.$refs.images.files[i].file);
                     } else {
                         uploadedImages.push(this.$refs.images.files[i].preview);
+                        // formData.append('uploadedImages', this.$refs.images.files[i].preview);
                     }
                 }
                 this.form.uploadedImages = uploadedImages;
@@ -96,10 +100,13 @@ export default defineComponent({
 
             if (this.goUser) {
                 this.form.goUser = true;
+                // formData.append('goUser', true);
             }
 
+            // formData.append('content', this.form.content);
+            // formData.append('postId', this.form.postId);
+
             this.form.post('/post', {
-                preserveScroll: true,
                 forceFormData: true,
                 onSuccess: () => {
                     this.close();
@@ -107,7 +114,9 @@ export default defineComponent({
                 }
             });
 
-            // axios.put('/post', this.form, )
+            // let settings = { headers: { 'content-type': 'multipart/form-data' } };
+
+            // axios.put('/post', formData, settings)
             // .then(response => {
             //     console.log(response);
             //     // this.close();
