@@ -60,39 +60,51 @@ class Controller extends BaseController
 
     public function getExPosts($hashtagName)
     {
-        $posts = Hashtag::where('name', $hashtagName)->first()->posts()->with(['user', 'comments.user', 'images', 'votes.user'])->orderBy('created_at', 'desc')->get();
+        if (Hashtag::where('name', $hashtagName)->get()->isEmpty()) return '';
+
+        $posts = Hashtag::where('name', $hashtagName)->first()->posts()->with(['user', 'comments.user', 'images', 'votes.user'])->orderBy('created_at', 'desc')->simplePaginate(12);
+
 
         return $posts;
     }
 
     public function autocomplete($hashtagName)
     {
-        $data = Hashtag::with('posts')->where('name', "LIKE", $hashtagName . '%')
+
+        $users = User::with('posts')->where('name', "LIKE", $hashtagName . "%")
             ->where('name', 'NOT LIKE', '% %')
             ->limit(5)
             ->distinct()
             ->orderBy('name')
             ->get();
-        $data2 = Hashtag::with('posts')->where('name', "LIKE", '%' . $hashtagName . '%')
+        $hashtags = Hashtag::with('posts')->where('name', "LIKE", $hashtagName . '%')
+            ->where('name', 'NOT LIKE', '% %')
+            ->limit(5)
+            ->distinct()
+            ->orderBy('name')
+            ->get();
+        $hashtags_relative = Hashtag::with('posts')->where('name', "LIKE", '%' . $hashtagName . '%')
             ->where('name', 'NOT LIKE', $hashtagName . '%')
             ->limit(5)
             ->distinct()
             ->orderBy('name')
             ->get();
 
-        $data = $data->merge($data2)->take(5);
-        // $data->load('posts');
+        $data = $hashtags->merge($hashtags_relative)->take(5);
+        $data = $users->merge($data)->take(5);
 
-        $hashtags = array();
+        $result = array();
 
         foreach ($data as $d) {
-            if (count($d->posts)) {
-                array_push($hashtags, $d->name);
+            if ($d->email) {
+                array_push($result, $d);
+            } else if (count($d->posts)) {
+                array_push($result, $d->name);
             }
         };
 
 
         // return response()->json($data);
-        return $hashtags;
+        return $result;
     }
 }

@@ -38,7 +38,16 @@
                                         </button>
                                     </form>
                                     <div v-if="autocom" class="absolute right-0 w-64 bg-white py-2 rounded-lg shadow-xl z-20">
-                                        <a v-for="name in suggestions" @mousedown="$inertia.get('/hashtag/'+name)" :key="name" class="block p-2 text-gray-800 hover:bg-indigo-500 hover:text-white cursor-pointer">#{{name}}</a>
+                                        <template v-for="(data, index) in suggestions" :key="index">
+                                            <a v-if="data.email" @mousedown="$inertia.get('/user/'+data.id)" class="flex items-center p-2 text-gray-800 hover:bg-indigo-500 hover:text-white cursor-pointer">
+                                                <button @click="$inertia.get('/user/'+ data.id)" class="inline-block text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition">
+                                                    <img :src="data.profile_photo_url" class="h-8 w-8 rounded-full object-cover" alt="profilepic">
+                                                </button>
+                                                <span class="ml-2">{{ data.name}}</span>
+                                            </a>
+                                            <a v-else @mousedown="$inertia.get('/hashtag/'+data)" class="block p-2 text-gray-800 hover:bg-indigo-500 hover:text-white cursor-pointer">#{{data}}</a>
+                                        </template>
+
                                     </div>
                                 </div>
                                 <jet-nav-link :href="route('dashboard')" :active="route().current('dashboard')">
@@ -280,6 +289,7 @@
     import JetResponsiveNavLink from '@/Jetstream/ResponsiveNavLink.vue'
     import { Head, Link } from '@inertiajs/inertia-vue3';
     import CreateForm from '@/Pages/Post/CreateForm.vue'
+    import ProfilePhoto from '@/Components/ProfilePhoto.vue'
 
     export default defineComponent({
         props: {
@@ -296,7 +306,8 @@
             JetNavLink,
             JetResponsiveNavLink,
             Link,
-            CreateForm
+            CreateForm,
+            ProfilePhoto
         },
 
         data() {

@@ -132,8 +132,36 @@ class PostController extends Controller
         }
 
         $user = Auth::user();
-
         $post = Post::where('id', $request->postId);
+
+        // ########################################
+
+        $oldHashtags = $this->string_to_hashtag_db($post->first()->content);
+        $hashtags = $this->string_to_hashtag_db($request->content);
+        foreach ($oldHashtags as $h) {
+            if (!in_array($h, $hashtags)) {
+                $hashtag_id = Hashtag::where('name', $h)->first()->id;
+                HashtagPost::where('post_id', $request->postId)->where('hashtag_id', $hashtag_id)->delete();
+            }
+        }
+        foreach ($hashtags as $h) {
+            if (!in_array($h, $oldHashtags)) {
+                $hashtag = Hashtag::where('name', $h)->first();
+                if (!$hashtag) {
+                    $hashtag = Hashtag::create([
+                        'name' => $h,
+                    ]);
+                }
+                HashtagPost::create([
+                    'hashtag_id' => $hashtag->id,
+                    'post_id' => $request->postId,
+                ]);
+            }
+        }
+
+
+        // ########################################
+
         $post->update([
             'content' => $request->content,
         ]);

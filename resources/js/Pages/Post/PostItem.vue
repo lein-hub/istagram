@@ -24,32 +24,34 @@
     <div v-else>
         <image-carousel :images="imageArray"></image-carousel>
     </div>
-    <div class="px-3 pb-2">
-        <div class="flex my-auto">
-            <svg v-if="isLiked" @click="clickUnlike" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-1 cursor-pointer" viewBox="0 0 20 20" fill="currentColor">
+    <div class="px-3">
+        <div class="flex py-2 my-auto">
+            <svg v-if="isLiked" @click="clickUnlike" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-1 cursor-pointer text-red-500" viewBox="0 0 20 20" fill="currentColor">
                 <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd" />
             </svg>
-            <svg v-else @click="clickLike" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-1 cursor-pointer" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg v-else @click="clickLike" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-1 cursor-pointer hover:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
             </svg>
-            <svg @click="$refs.commentInput.focus()" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-1 cursor-pointer" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg @click="$refs.commentInput.focus()" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-1 cursor-pointer hover:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
             </svg>
-            <svg v-if="!isMine" @click="newChatChannel(post.user.id)" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-1 cursor-pointer" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg v-if="!isMine" @click="newChatChannel(post.user.id)" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-1 cursor-pointer hover:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
             </svg>
         </div>
-      <div class="pt-2">
+      <div class="">
         <!-- <i class="far fa-heart cursor-pointer"></i> -->
         <span v-if="post.votes.length" @click="showList = true" class="text-sm text-gray-400 font-medium cursor-pointer">{{ post.votes.length }} likes</span>
       </div>
       <div class="pt-1">
         <div class="mb-3 text-sm">
           <span @click="showUserPage(post.user.id)" class="font-medium mr-2 font-bold cursor-pointer">{{post.user.name}}</span>
-              <span v-for="(item, index) in splitedContent" :key="index">
-                  <Link v-if="isHashtag(item)" :href="gethref(item)" class="text-blue-500 cursor-pointer">{{item + ' '}}</Link>
-                  <span v-else>{{item + ' '}}</span>
-              </span>
+          <span>
+            <template v-for="(item, index) in splittedContent" :key="index">
+                <Link v-if="isHashtag(item)" :href="gethref(item)" class="text-blue-500 cursor-pointer">{{item}}&nbsp;</Link>
+                <template v-else>{{item}}&nbsp;</template>
+            </template>
+          </span>
         </div>
       </div>
       <div v-if="post.comments.length > 2" @click="showPost=true" class="text-sm mb-2 text-gray-400 cursor-pointer font-medium">View all {{ post.comments.length }} comments</div>
@@ -125,10 +127,10 @@ export default defineComponent({
         isMine() {
             return this.post.user_id == this.$page.props.user.id;
         },
-        splitedContent() {
+        splittedContent() {
             var content = this.post.content; // html 안에 'content'라는 아이디를 content 라는 변수로 정의한다.
 
-            var splitedArray = content.split(' '); // 공백을 기준으로 문자열을 자른다.
+            var splittedArray = content.split(' '); // 공백을 기준으로 문자열을 자른다.
             // var linkedContent = '';
             // for(var word in splitedArray)
             // {
@@ -140,7 +142,7 @@ export default defineComponent({
             // }
             // linkedContent += word+' ';
             // }
-            return splitedArray;
+            return splittedArray;
         }
     },
     methods: {

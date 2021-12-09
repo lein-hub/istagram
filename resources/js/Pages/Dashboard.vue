@@ -8,6 +8,9 @@
 
         <div v-if="!isLoading">
             <post-list :posts="posts" @getMorePosts="getMorePosts" @getPosts="getPosts"></post-list>
+            <div v-if="gettingMorePosts" class="h-32 flex justify-center">
+                <img src="/storage/loading.gif" alt="">
+            </div>
         </div>
         <div v-else class="flex h-screen items-center justify-center">
             <img src="/storage/loading.gif" alt="">
@@ -34,6 +37,7 @@
             return {
                 posts: [],
                 isLoading: false,
+                gettingMorePosts: false,
             }
         },
         methods: {
@@ -56,14 +60,16 @@
                 // 나중에 구현합시다.
             },
             getMorePosts() {
-                if (!this.posts.next_page_url) {
+                if (!this.posts.next_page_url || this.gettingMorePosts) {
                     return
                 }
+                this.gettingMorePosts = true;
                 axios.get(this.posts.next_page_url, {}).then(response => {
                     // console.log(response.data);
                     // this.posts = response.data;
                     // this.posts.data = [...this.posts.data, ...response.data.data];
                     this.posts = {...response.data, 'data': [...this.posts.data, ...response.data.data]};
+                    this.gettingMorePosts = false;
                 }).catch(error => {
                     console.log(error);
                 });

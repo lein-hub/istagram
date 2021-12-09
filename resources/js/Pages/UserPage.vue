@@ -35,7 +35,7 @@
                             <span class="">
                                 게시물
                                 <span class="font-extrabold">
-                                    {{ posts.length }}
+                                    {{ posts.data.length }}
                                 </span>
                             </span>
                         </li>
@@ -59,9 +59,12 @@
                 </section>
             </div>
             <div class="grid grid-cols-3 lg:gap-7 gap-1 mt-5">
-                <div v-for="post in posts" :key="post.id" class="relative h-0 pb-2/3 pt-1/3 bg-black cursor-pointer">
+                <div v-for="post in posts.data" :key="post.id" class="relative h-0 pb-2/3 pt-1/3 bg-black cursor-pointer">
                     <post-preview :post="post" @getPosts="getPosts"></post-preview>
                 </div>
+            </div>
+            <div v-if="gettingMorePosts" class="h-32 flex justify-center">
+                <img src="/storage/loading.gif" alt="">
             </div>
         </div>
         <div v-else class="flex h-screen items-center justify-center">
@@ -91,6 +94,7 @@ export default {
             showFollowers: false,
             posts: [],
             isLoading: false,
+            gettingMorePosts: false,
         }
     },
     computed: {
@@ -134,10 +138,44 @@ export default {
                 console.log(error);
             });
         },
+        getMorePosts() {
+            if (!this.posts.next_page_url || this.gettingMorePosts) {
+                return
+            }
+            this.gettingMorePosts = true;
+            axios.get(this.posts.next_page_url, {})
+            .then(response => {
+                this.posts = {...response.data, 'data': [...this.posts.data, ...response.data.data]};
+                this.gettingMorePosts = false;
+            })
+            .catch(error => {
+                console.log(error);
+            });
+        },
     },
-    mounted() {
+    created() {
         this.getPosts();
     },
+    mounted() {
+        this.scroll = debounce ((e) => {
+                // console.log('scrolled');
+                // console.log("offsetHeight:", document.documentElement.offsetHeight);
+                // console.log("scrollHeight:", document.documentElement.scrollHeight);
+                // console.log("scrollTop:", document.documentElement.scrollTop);
+                // console.log("clientHeight:", window.clientHeight);
+                // console.log("innerHeight:", window.innerHeight);
+
+                if (document.documentElement.scrollHeight - (window.innerHeight + document.documentElement.scrollTop) < 500) {
+                    console.log('scrolled down');
+                    // this.$emit('getMorePosts');
+                    this.getMorePosts();
+                }
+            }, 300);
+        window.addEventListener('scroll', this.scroll);
+    },
+    beforeUnmount() {
+        window.removeEventListener('scroll', this.scroll);
+    }
 }
 </script>
 <style lang="">

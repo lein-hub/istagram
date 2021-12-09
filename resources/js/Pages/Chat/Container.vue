@@ -19,8 +19,19 @@
                 <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                     <div></div>
                     <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
-                        <chat-container :chats="chats" @getMoreChats="getMoreChats"></chat-container>
-                        <input-chat :channel="currentChannel" @messageSent="getChats"></input-chat>
+                        <div class="relative">
+                            <chat-container :chats="chats" @getMoreChats="getMoreChats"></chat-container>
+
+                            <div class="absolute bg-black bottom-0 h-32 bg-white py-2 shadow-xl z-20" v-show="imagePreview">
+                                <button @click="removePhoto" class="absolute right-0 hover:text-red-600 flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                </button>
+                                <img :src="imagePreview" class="object-cover h-full" alt="">
+                            </div>
+                        </div>
+                        <input-chat :channel="currentChannel" @messageSent="getChats" @updateImagePreview="updateImagePreview" ref="input"></input-chat>
                     </div>
                 </div>
             </div>
@@ -54,6 +65,7 @@ export default defineComponent ({
             currentChannel: '',
             chats: [],
             listShow: false,
+            imagePreview: null,
         }
     },
     methods: {
@@ -117,11 +129,15 @@ export default defineComponent ({
                 console.log(error);
             });
         },
-        // messageSent(data) {
-        //     this.chats.data = [data, ...this.chats.data];
-        // },
         close() {
             this.listShow = false;
+        },
+        updateImagePreview(data) {
+            this.imagePreview = data;
+        },
+        removePhoto() {
+            this.imagePreview = null;
+            this.$refs.input.$refs.image.value = '';
         }
     },
     watch: {

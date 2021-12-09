@@ -22,7 +22,7 @@ class UserController extends Controller
 
     public function getUserPosts($userId)
     {
-        $posts = Post::where('user_id', $userId)->with(['user', 'comments.user', 'images', 'votes.user'])->latest()->get();
+        $posts = Post::where('user_id', $userId)->with(['user', 'comments.user', 'images', 'votes.user'])->latest()->simplePaginate(12);
 
         return $posts;
     }

@@ -36,7 +36,7 @@ export default {
                 // console.log("clientHeight:", page.clientHeight);
                 // console.log("innerHeight:", window.innerHeight);
 
-                if (page.scrollHeight - (window.innerHeight + document.documentElement.scrollTop) < 50) {
+                if (page.scrollHeight - (window.innerHeight + document.documentElement.scrollTop) < 800) {
                     console.log('scrolled down');
                     this.$emit('getMorePosts');
                     // this.getMorePosts();

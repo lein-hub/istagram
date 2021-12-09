@@ -9,6 +9,7 @@ use App\Models\Chat;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class ChatController extends Controller
@@ -59,10 +60,25 @@ class ChatController extends Controller
 
     public function newChat(Request $request, $channelId)
     {
+
+        // $request->validate([
+        //     'image.*' => 'required|mimes:jpg,jpeg,png,csv,txt,xlx,xls,pdf|max:2048'
+        // ]);
+
+
         $newChat = new Chat;
         $newChat->user_id = Auth::id();
         $newChat->channel_id = $channelId;
-        $newChat->content = $request->content;
+        if ($request->content) {
+            $newChat->content = $request->content;
+        }
+        if ($request->file()) {
+            // $file_name = time() . '_' . $request->file('image')->getClientOriginalName();
+            // $file_path = $request->file('image')->storeAs('uploads', $file_name, 'public');
+            $imagePath = Storage::disk('uploads')->put(Auth::user()->email . '/chats', $request->file('image'));
+
+            $newChat->photo = '/uploads/' . $imagePath;
+        }
         $newChat->save();
         $newChat->load('user');
         broadcast(new NewChatMessage($newChat))->toOthers();
