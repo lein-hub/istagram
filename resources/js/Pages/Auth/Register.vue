@@ -3,7 +3,8 @@
 
     <jet-authentication-card>
         <template #logo>
-            <jet-authentication-card-logo />
+            <!-- <jet-authentication-card-logo /> -->
+            <img src="/storage/icon/favicon-96x96.png" alt="">
         </template>
 
         <jet-validation-errors class="mb-4" />

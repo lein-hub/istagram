@@ -99,13 +99,14 @@ export default defineComponent({
             this.form.post('/post', {
                 forceFormData: true,
                 onSuccess: () => {
-                    this.$emit('closeModal');
+                    this.close();
                     this.$emit('getPosts');
                 },
             });
         },
         close() {
             this.$emit('closeModal');
+            this.form.content = null;
         },
         imageChanged() {
             const photo = this.$refs.image.files;
